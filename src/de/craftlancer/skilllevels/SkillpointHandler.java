@@ -6,40 +6,42 @@ import de.craftlancer.currencyhandler.Handler;
 
 public class SkillpointHandler implements Handler<Integer>
 {
+    SkillLevels plugin;
+    String name;
+    
+    public SkillpointHandler(SkillLevels plugin, String name)
+    {
+        this.plugin = plugin;
+        this.name = name;
+    }
 
     @Override
     public boolean hasCurrency(Player p, Integer amount)
     {
-        // TODO Auto-generated method stub
-        return false;
+        return plugin.getSkillPlayer(p).getSkillPoints() >= amount;
     }
 
     @Override
     public void withdrawCurrency(Player p, Integer amount)
     {
-        // TODO Auto-generated method stub
-        
+        plugin.getSkillPlayer(p).withdrawSkillPoints(amount);
     }
 
     @Override
     public String getCurrencyName()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return name;
     }
 
     @Override
     public boolean checkInputClass(Object obj)
     {
-        // TODO Auto-generated method stub
-        return false;
+        return obj instanceof Integer;
     }
 
     @Override
     public String getFormatedString(Object value)
     {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
+        return ((Integer) value).toString() + " " + getCurrencyName();
+    }    
 }
