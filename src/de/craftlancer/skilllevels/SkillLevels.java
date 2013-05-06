@@ -8,8 +8,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class SkillLevels extends JavaPlugin
 {
-    FileConfiguration config;
-    FileConfiguration pconfig;
+    private FileConfiguration config;
+    private FileConfiguration pconfig;
     
     @Override
     public void onEnable()
