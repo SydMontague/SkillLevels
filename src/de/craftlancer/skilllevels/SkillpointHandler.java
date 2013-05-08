@@ -28,13 +28,19 @@ public class SkillpointHandler implements Handler<Integer>
     }
 
     @Override
+    public void giveCurrency(Player p, Integer amount)
+    {
+        plugin.getSkillPlayer(p).addSkillPoints(amount);        
+    }
+    
+    @Override
     public String getCurrencyName()
     {
         return name;
     }
 
     @Override
-    public boolean checkInputClass(Object obj)
+    public boolean checkInputObject(Object obj)
     {
         return obj instanceof Integer;
     }

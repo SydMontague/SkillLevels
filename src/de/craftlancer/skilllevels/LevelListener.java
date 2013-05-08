@@ -5,11 +5,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
-public class SkillListener implements Listener
+public class LevelListener implements Listener
 {
     SkillLevels plugin;
     
-    public SkillListener(SkillLevels plugin)
+    public LevelListener(SkillLevels plugin)
     {
         this.plugin = plugin;
     }

@@ -16,7 +16,7 @@ public class SkillLevels extends JavaPlugin
     
     private FileConfiguration config;
     private FileConfiguration pconfig;
-    private Map<String, SkillPlayer> playerMap = new HashMap<String, SkillPlayer>();
+    private Map<String, LevelPlayer> playerMap = new HashMap<String, LevelPlayer>();
     
     private Map<EntityType, Integer> killMap = new HashMap<EntityType, Integer>();
     
@@ -37,7 +37,7 @@ public class SkillLevels extends JavaPlugin
              
         
         for (String key : pconfig.getKeys(false))
-            playerMap.put(key.toLowerCase(), new SkillPlayer(pconfig.getInt(key + ".exp"), pconfig.getInt(key + ".usedskillp")));
+            playerMap.put(key.toLowerCase(), new LevelPlayer(pconfig.getInt(key + ".exp"), pconfig.getInt(key + ".usedskillp")));
     }
     
     @Override
@@ -46,7 +46,7 @@ public class SkillLevels extends JavaPlugin
         
     }
     
-    public SkillPlayer getSkillPlayer(Player p)
+    public LevelPlayer getSkillPlayer(Player p)
     {
         return playerMap.get(p.getName());
     }

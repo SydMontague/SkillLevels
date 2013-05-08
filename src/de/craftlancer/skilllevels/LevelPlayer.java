@@ -1,11 +1,11 @@
 package de.craftlancer.skilllevels;
 
-public class SkillPlayer
+public class LevelPlayer
 {
     private int exp;
     private int usedpoints;
     
-    public SkillPlayer(int exp, int pointbalance)
+    public LevelPlayer(int exp, int pointbalance)
     {
         this.exp = exp;
         this.usedpoints = pointbalance;
