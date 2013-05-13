@@ -4,39 +4,43 @@ import org.bukkit.entity.Player;
 
 import de.craftlancer.currencyhandler.Handler;
 
-public class SkillpointHandler implements Handler<Integer>
+public class SkillPointHandler implements Handler<Integer>
 {
-    SkillLevels plugin;
-    String name;
+    LevelSystem system;
     
-    public SkillpointHandler(SkillLevels plugin, String name)
+    public SkillPointHandler(LevelSystem system)
     {
-        this.plugin = plugin;
-        this.name = name;
+        this.system = system;
     }
 
     @Override
     public boolean hasCurrency(Player p, Integer amount)
     {
-        return plugin.getSkillPlayer(p).getSkillPoints() >= amount;
+        return false; //TODO
     }
 
     @Override
     public void withdrawCurrency(Player p, Integer amount)
     {
-        plugin.getSkillPlayer(p).withdrawSkillPoints(amount);
+        //TODO
     }
 
     @Override
     public void giveCurrency(Player p, Integer amount)
     {
-        plugin.getSkillPlayer(p).addSkillPoints(amount);        
+        //TODO       
     }
+    
+    @Override
+    public String getFormatedString(Integer value)
+    {
+        return value.toString() + " " + getCurrencyName();
+    }   
     
     @Override
     public String getCurrencyName()
     {
-        return name;
+        return null;//TODO
     }
 
     @Override
@@ -44,10 +48,4 @@ public class SkillpointHandler implements Handler<Integer>
     {
         return obj instanceof Integer;
     }
-
-    @Override
-    public String getFormatedString(Object value)
-    {
-        return ((Integer) value).toString() + " " + getCurrencyName();
-    }    
 }

@@ -20,6 +20,5 @@ public class LevelListener implements Listener
         if(!e.getEntity().isDead() || !(e.getDamager() instanceof Player))
             return;
         
-        plugin.getSkillPlayer((Player) e.getDamager()).addExp(plugin.getMobKillExp(e.getEntityType()));
     }
 }

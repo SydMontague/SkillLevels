@@ -5,51 +5,10 @@ public class LevelPlayer
     private int exp;
     private int usedpoints;
     
-    public LevelPlayer(int exp, int pointbalance)
+    public LevelPlayer(int exp, int usedpoints)
     {
         this.exp = exp;
-        this.usedpoints = pointbalance;
-    }
-    
-    public int getLevel()
-    {
-        return getLevel(exp);
-    }
-    
-    public void withdrawExp(int xp)
-    {
-        if(xp == 0)
-            return;
-        
-        int oldlevel = getLevel(exp);        
-        exp -= xp;
-        
-        if(oldlevel > getLevel(exp))
-            notifyLevelDown();
-    }
-
-    public void addExp(int xp)
-    {
-        if(xp == 0)
-            return;
-        
-        int oldlevel = getLevel(exp);        
-        exp += xp;
-        
-        if(oldlevel < getLevel(exp))
-            notifyLevelUp();
-    }
-    
-    private void notifyLevelUp()
-    {
-        // TODO Auto-generated method stub
-        
-    }    
-    
-    private void notifyLevelDown()
-    {
-        // TODO Auto-generated method stub
-        
+        this.usedpoints = usedpoints;
     }
 
     public int getExp()
@@ -57,24 +16,28 @@ public class LevelPlayer
         return exp;
     }
     
-    public void addSkillPoints(int i)
+    public void setExp(int i)
     {
-        usedpoints -= i;
+        exp = i;
     }
     
-    public void withdrawSkillPoints(int i)
+    public void addExp(int i)
+    {
+        exp += i;
+    }
+    
+    public int getUsedPoints()
+    {
+        return usedpoints;
+    }
+    
+    public void setUsedPoints(int i)
+    {
+        usedpoints = i;
+    }
+    
+    public void addUsedPoints(int i)
     {
         usedpoints += i;
-    }
-    
-    public int getSkillPoints()
-    {
-        return getLevel() * SkillLevels.skillsperlevel - usedpoints;
-    }
-    
-    public int getLevel(int i)
-    {
-        //TODO formula
-        return 0;
     }
 }
