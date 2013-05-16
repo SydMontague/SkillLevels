@@ -30,8 +30,8 @@ public class LevelSystem
         if (maxlevel > 0)
             preCalcLevels();
         
-        pointsperlevel = ppl;
-        formula = form;
+        setPointsPerLevel(ppl);
+        setFormula(form);
         xpperaction = xpmap;
         
         setLevelName(levelName);
@@ -50,10 +50,75 @@ public class LevelSystem
             preCalc[i] = calcExpAtLevel(i);
     }
     
-    private int calcExpAtLevel(int i)
+    public int calcExpAtLevel(int x)
     {
-        // TODO Auto-generated method stub
-        return 0;
+        return Integer.valueOf(getMathResult(formula, x, formula));
+    }
+    
+    private static String getMathResult(String form, double x, String completForm)
+    {
+        if (x <= 0)
+            return "0";
+        
+        form = form.replace("x", String.valueOf(x));
+        
+        while (form.contains("(") && form.contains(")"))
+        {
+            int indexFirst = -1;
+            int indexLast = -1;
+            int countOpen = 0;
+            for (int i = 0; i < form.toCharArray().length; i++)
+            {
+                if (form.toCharArray()[i] == '(')
+                    if (indexFirst == -1)
+                        indexFirst = i;
+                    else
+                        countOpen++;
+                
+                if (form.toCharArray()[i] == ')')
+                    if (indexLast == -1 && countOpen == 0)
+                        indexLast = i;
+                    else
+                        countOpen--;
+            }
+            
+            if (indexFirst != -1 && indexLast != -1)
+                form = form.replace(form.substring(indexFirst, indexLast + 1), getMathResult(form.substring(indexFirst + 1, indexLast), x, completForm));
+        }
+        
+        String[] array = form.split("[+]");
+        
+        for (String s : array)
+        {
+            
+            if (s.contains("^"))
+                form = form.replace(s, String.valueOf(Math.pow(Double.valueOf(s.substring(0, s.indexOf("^"))), Double.valueOf(s.substring(s.indexOf("^") + 1)))));
+            else if (s.contains("*"))
+                form = form.replace(s, String.valueOf(Double.valueOf(s.substring(0, s.indexOf("*"))) * Double.valueOf(s.substring(s.indexOf("*") + 1))));
+            else if (s.contains("/"))
+                form = form.replace(s, String.valueOf(Double.valueOf(s.substring(0, s.indexOf("/"))) / Double.valueOf(s.substring(s.indexOf("/") + 1))));
+            else if (s.contains("log"))
+                form = form.replace(s, String.valueOf(Math.log(Double.valueOf(s.replace("log", "")))));
+            else if (s.contains("sqrt"))
+                form = form.replace(s, String.valueOf(Math.sqrt(Double.valueOf(s.replace("sqrt", "")))));
+            else if (s.contains("xp"))
+                form = form.replace(s, String.valueOf(getMathResult(completForm, Double.valueOf(s.replace("xp", "")), completForm)));
+        }
+        
+        double result = 0;
+        for (String s : form.split("[+]"))
+        {
+            try
+            {
+                result += Double.valueOf(s);
+            }
+            catch (NumberFormatException e)
+            {
+                result += 0;
+            }
+        }
+        
+        return String.valueOf(result);
     }
     
     public int getExpAtLevel(int i)
@@ -150,5 +215,25 @@ public class LevelSystem
             playerMap.put(player, new LevelPlayer(0, 0));
         
         playerMap.get(player).addExp(xpperaction.get(action).get(name));
+    }
+    
+    public int getPointsPerLevel()
+    {
+        return pointsperlevel;
+    }
+    
+    public void setPointsPerLevel(int pointsperlevel)
+    {
+        this.pointsperlevel = pointsperlevel;
+    }
+    
+    public String getFormula()
+    {
+        return formula;
+    }
+    
+    public void setFormula(String formula)
+    {
+        this.formula = formula;
     }
 }
