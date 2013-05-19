@@ -40,4 +40,14 @@ public class LevelPlayer
     {
         usedpoints += i;
     }
+
+    public void revokeExp(Integer i)
+    {
+        exp -= i;
+    }
+
+    public void revokeUsedPoints(Integer i)
+    {
+        usedpoints -= i;
+    }
 }

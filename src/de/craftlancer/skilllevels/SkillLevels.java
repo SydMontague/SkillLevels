@@ -53,7 +53,7 @@ public class SkillLevels extends JavaPlugin implements Listener
     
     public void handleAction(LevelAction action, String name, int amount, String player)
     {
-        for(LevelSystem ls : levelMap.values())
+        for (LevelSystem ls : levelMap.values())
             ls.handleAction(action, name, amount, player);
     }
     
@@ -82,13 +82,11 @@ public class SkillLevels extends JavaPlugin implements Listener
             
             for (String action : config.getConfigurationSection("systems." + key + ".actions").getKeys(false))
             {
-                LevelAction act = LevelAction.valueOf(action);
-                
                 Map<String, Integer> xpMap = new HashMap<String, Integer>();
                 for (String value : config.getConfigurationSection("systems." + key + ".actions." + action).getKeys(false))
                     xpMap.put(value, config.getInt("systems." + key + ".actions." + action + "." + value));
                 
-                helpMap.put(act, xpMap);
+                helpMap.put(LevelAction.valueOf(action), xpMap);
             }
             
             levelMap.put(key, new LevelSystem(ppl, maxlevel, formula, helpMap, levelName, levelKey, pointName, pointKey, expName, expKey));

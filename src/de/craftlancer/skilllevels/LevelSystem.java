@@ -55,8 +55,10 @@ public class LevelSystem
         return Integer.valueOf(getMathResult(formula, x, formula));
     }
     
+    //TODO make it to need less parentheses
+    //TODO another method to make exp -> level
     private static String getMathResult(String form, double x, String completForm)
-    {
+    {        
         if (x <= 0)
             return "0";
         
@@ -119,6 +121,13 @@ public class LevelSystem
         }
         
         return String.valueOf(result);
+    }
+    
+    public int getLevel(int exp)
+    {
+        for (int i = 0;; i++)
+            if (getExpAtLevel(i) > exp)
+                return i - 1;
     }
     
     public int getExpAtLevel(int i)

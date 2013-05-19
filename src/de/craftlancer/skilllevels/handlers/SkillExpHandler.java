@@ -12,48 +12,47 @@ public class SkillExpHandler implements Handler<Integer>
     public SkillExpHandler(LevelSystem system)
     {
         this.system = system;
-    }    
+    }
     
     @Override
     public boolean hasCurrency(Player p, Integer amount)
     {
-        // TODO Auto-generated method stub
-        return false;
+        return system.getPlayer(p).getExp() >= amount;
     }
     
     @Override
     public void withdrawCurrency(Player p, Integer amount)
     {
-        // TODO Auto-generated method stub
-        
+        system.getPlayer(p).revokeExp(amount);
     }
     
     @Override
     public void giveCurrency(Player p, Integer amount)
     {
-        // TODO Auto-generated method stub
-        
+        system.getPlayer(p).addExp(amount);
+    }
+    
+    @Override
+    public void setCurrency(Player p, Integer amount)
+    {
+        system.getPlayer(p).setExp(amount);
     }
     
     @Override
     public String getFormatedString(Integer value)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return value.toString() + " " + getCurrencyName();
     }
     
     @Override
     public String getCurrencyName()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return system.getExpName();
     }
     
     @Override
     public boolean checkInputObject(Object obj)
     {
-        // TODO Auto-generated method stub
-        return false;
+        return (obj instanceof Integer);
     }
-    
 }
