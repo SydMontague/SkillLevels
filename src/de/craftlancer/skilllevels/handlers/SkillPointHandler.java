@@ -1,8 +1,9 @@
-package de.craftlancer.skilllevels;
+package de.craftlancer.skilllevels.handlers;
 
 import org.bukkit.entity.Player;
 
 import de.craftlancer.currencyhandler.Handler;
+import de.craftlancer.skilllevels.LevelSystem;
 
 public class SkillPointHandler implements Handler<Integer>
 {

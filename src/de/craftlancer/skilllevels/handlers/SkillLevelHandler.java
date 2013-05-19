@@ -1,17 +1,19 @@
-package de.craftlancer.skilllevels;
+package de.craftlancer.skilllevels.handlers;
 
 import org.bukkit.entity.Player;
 
 import de.craftlancer.currencyhandler.Handler;
+import de.craftlancer.skilllevels.LevelSystem;
 
-public class SkillExpHandler implements Handler<Integer>
+public class SkillLevelHandler implements Handler<Integer>
 {
-    LevelSystem system;
+    private LevelSystem system;
     
-    public SkillExpHandler(LevelSystem system)
+    public SkillLevelHandler(LevelSystem system)
     {
         this.system = system;
-    }    
+    }
+    
     
     @Override
     public boolean hasCurrency(Player p, Integer amount)
@@ -51,8 +53,7 @@ public class SkillExpHandler implements Handler<Integer>
     @Override
     public boolean checkInputObject(Object obj)
     {
-        // TODO Auto-generated method stub
-        return false;
+        return obj instanceof Integer;
     }
     
 }

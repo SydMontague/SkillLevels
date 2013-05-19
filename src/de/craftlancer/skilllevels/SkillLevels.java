@@ -15,6 +15,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import de.craftlancer.currencyhandler.CurrencyHandler;
+import de.craftlancer.skilllevels.handlers.SkillExpHandler;
+import de.craftlancer.skilllevels.handlers.SkillLevelHandler;
+import de.craftlancer.skilllevels.handlers.SkillPointHandler;
 
 public class SkillLevels extends JavaPlugin implements Listener
 {
@@ -45,8 +48,13 @@ public class SkillLevels extends JavaPlugin implements Listener
     
     public void handleAction(LevelAction action, String name, String player)
     {
+        handleAction(action, name, 1, player);
+    }
+    
+    public void handleAction(LevelAction action, String name, int amount, String player)
+    {
         for(LevelSystem ls : levelMap.values())
-            ls.handleAction(action, name, player);
+            ls.handleAction(action, name, amount, player);
     }
     
     private void loadConfig()

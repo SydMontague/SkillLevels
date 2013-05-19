@@ -206,7 +206,7 @@ public class LevelSystem
         this.levelKey = levelKey;
     }
     
-    public void handleAction(LevelAction action, String name, String player)
+    public void handleAction(LevelAction action, String name, int amount, String player)
     {
         if (!xpperaction.containsKey(name))
             return;
@@ -214,7 +214,7 @@ public class LevelSystem
         if (!playerMap.containsKey(player))
             playerMap.put(player, new LevelPlayer(0, 0));
         
-        playerMap.get(player).addExp(xpperaction.get(action).get(name));
+        playerMap.get(player).addExp(xpperaction.get(action).get(name) * amount);
     }
     
     public int getPointsPerLevel()
