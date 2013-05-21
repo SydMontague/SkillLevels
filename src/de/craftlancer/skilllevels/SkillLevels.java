@@ -36,14 +36,19 @@ public class SkillLevels extends JavaPlugin implements Listener
         getServer().getPluginManager().registerEvents(new LevelListener(this), this);
         
         if (config.getBoolean("general.useCurrencyHandler", false) && getServer().getPluginManager().getPlugin("CurrencyHandler") != null)
-        {
             for (LevelSystem ls : levelMap.values())
+            {
                 CurrencyHandler.registerCurrency(ls.getLevelKey(), new SkillLevelHandler(ls));
-            for (LevelSystem ls : levelMap.values())
                 CurrencyHandler.registerCurrency(ls.getLevelKey(), new SkillPointHandler(ls));
-            for (LevelSystem ls : levelMap.values())
                 CurrencyHandler.registerCurrency(ls.getLevelKey(), new SkillExpHandler(ls));
-        }
+            }
+    }
+    
+    @Override
+    public void onDisable()
+    {
+        for (Player p : getServer().getOnlinePlayers())
+            savePlayer(p.getName());
     }
     
     public void handleAction(LevelAction action, String name, String player)
@@ -101,13 +106,6 @@ public class SkillLevels extends JavaPlugin implements Listener
             for (String system : pconfig.getConfigurationSection(key).getKeys(false))
                 if (levelMap.containsKey(system))
                     levelMap.get(system).addLevelPlayer(key, pconfig.getInt(key + "." + system + ".exp"), pconfig.getInt(key + "." + system + ".usedskillp"));
-    }
-    
-    @Override
-    public void onDisable()
-    {
-        for (Player p : getServer().getOnlinePlayers())
-            savePlayer(p.getName());
     }
     
     @EventHandler
