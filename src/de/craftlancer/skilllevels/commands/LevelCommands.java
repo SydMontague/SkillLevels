@@ -12,14 +12,6 @@ import de.craftlancer.skilllevels.Utils;
 
 public class LevelCommands implements TabExecutor
 {
-    // sender.sendMessage("/levels help - this text");
-    // sender.sendMessage("/levels stats [player] - overview over all levels");
-    // sender.sendMessage("/levels add <player> <system> <xp|lv|sp> <amount> - increase a player's stats");
-    // sender.sendMessage("/levels revoke <player> <system> <xp|lv|sp> <amount> - decrease a player's stats");
-    // sender.sendMessage("/levels set <player> <system> <xp|lv|sp> <amount> - set a player's stats");
-    // sender.sendMessage("/levels reset <player> [system] - reset a player's stats");
-    // sender.sendMessage("/levels reload - reload the plugin config");*/
-    
     private HashMap<String, LevelSubCommand> commands = new HashMap<String, LevelSubCommand>();
     
     public LevelCommands(SkillLevels plugin)
