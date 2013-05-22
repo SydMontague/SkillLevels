@@ -3,7 +3,6 @@ package de.craftlancer.skilllevels.handlers;
 import org.bukkit.entity.Player;
 
 import de.craftlancer.currencyhandler.Handler;
-import de.craftlancer.skilllevels.LevelPlayer;
 import de.craftlancer.skilllevels.LevelSystem;
 
 public class SkillLevelHandler implements Handler<Integer>
@@ -18,30 +17,27 @@ public class SkillLevelHandler implements Handler<Integer>
     @Override
     public boolean hasCurrency(Player p, Integer amount)
     {
-        return system.getLevel(system.getPlayer(p).getExp()) >= amount;
-        
+        return system.getLevel(p) >= amount;
     }
     
     @Override
     public void withdrawCurrency(Player p, Integer amount)
     {
-        LevelPlayer sp = system.getPlayer(p);
-        int level = system.getLevel(sp.getExp());
-        sp.revokeExp(system.getExpAtLevel(level) - system.getExpAtLevel(level - amount));
+        int level = system.getLevel(p);
+        system.revokeExp(system.getExpAtLevel(level) - system.getExpAtLevel(level - amount), p);
     }
     
     @Override
     public void giveCurrency(Player p, Integer amount)
     {
-        LevelPlayer sp = system.getPlayer(p);
-        int level = system.getLevel(sp.getExp());
-        sp.addExp(system.getExpAtLevel(level + amount) - system.getExpAtLevel(level));
+        int level = system.getLevel(p);
+        system.addExp(system.getExpAtLevel(level + amount) - system.getExpAtLevel(level), p);
     }
     
     @Override
     public void setCurrency(Player p, Integer amount)
     {
-        system.getPlayer(p).setExp(system.getExpAtLevel(amount));
+        system.setExp(system.getExpAtLevel(amount), p);
     }
     
     @Override

@@ -17,25 +17,25 @@ public class SkillPointHandler implements Handler<Integer>
     @Override
     public boolean hasCurrency(Player p, Integer amount)
     {
-        return system.getLevel(system.getPlayer(p).getExp()) * system.getPointsPerLevel() - system.getPlayer(p).getUsedPoints() >= amount;
+        return system.getPoints(p) >= amount;
     }
     
     @Override
     public void withdrawCurrency(Player p, Integer amount)
     {
-        system.getPlayer(p).addUsedPoints(amount);
+        system.addUsedPoints(amount, p);
     }
     
     @Override
     public void giveCurrency(Player p, Integer amount)
     {
-        system.getPlayer(p).revokeUsedPoints(amount);
+        system.revokeUsedPoints(amount, p);
     }
     
     @Override
     public void setCurrency(Player arg0, Integer arg1)
     {
-        throw new UnsupportedOperationException("ItemHandler does not support setCurrency()! Skipping the handler.");
+        throw new UnsupportedOperationException("SkillPointHandler does not support setCurrency()! Skipping the handler.");
     }
     
     @Override

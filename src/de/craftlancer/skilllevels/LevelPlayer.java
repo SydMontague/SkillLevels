@@ -10,7 +10,7 @@ public class LevelPlayer
         this.exp = exp;
         this.usedpoints = usedpoints;
     }
-
+    
     public int getExp()
     {
         return exp;
@@ -40,12 +40,12 @@ public class LevelPlayer
     {
         usedpoints += i;
     }
-
+    
     public void revokeExp(Integer i)
     {
         exp -= i;
     }
-
+    
     public void revokeUsedPoints(Integer i)
     {
         usedpoints -= i;

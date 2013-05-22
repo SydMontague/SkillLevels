@@ -19,11 +19,12 @@ import de.craftlancer.skilllevels.handlers.SkillExpHandler;
 import de.craftlancer.skilllevels.handlers.SkillLevelHandler;
 import de.craftlancer.skilllevels.handlers.SkillPointHandler;
 
+//TODO look for a better name
 public class SkillLevels extends JavaPlugin implements Listener
 {
     private FileConfiguration config;
     private FileConfiguration pconfig;
-    private File pfile = new File(getDataFolder(), "players.yml");
+    private File pfile;
     private Map<String, LevelSystem> levelMap = new HashMap<String, LevelSystem>();
     
     @Override
@@ -62,15 +63,28 @@ public class SkillLevels extends JavaPlugin implements Listener
             ls.handleAction(action, name, amount, player);
     }
     
-    private void loadConfig()
+    public Map<String, LevelSystem> getLevelSystems()
+    {
+        return levelMap;
+    }
+    
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent e)
+    {
+        savePlayer(e.getPlayer().getName());
+    }
+    
+    public void loadConfig()
     {
         if (!new File(getDataFolder().getPath() + File.separatorChar + "config.yml").exists())
             saveDefaultConfig();
         
+        reloadConfig();
         config = getConfig();
         
         for (String key : config.getConfigurationSection("systems").getKeys(false))
         {
+            String name = config.getString("systems." + key + ".name");
             String formula = config.getString("systems." + key + ".forumla");
             int ppl = config.getInt("systsms." + key + ".pointsperlevel");
             int maxlevel = config.getInt("systsms." + key + ".maxlevel");
@@ -94,12 +108,13 @@ public class SkillLevels extends JavaPlugin implements Listener
                 helpMap.put(LevelAction.valueOf(action), xpMap);
             }
             
-            levelMap.put(key, new LevelSystem(ppl, maxlevel, formula, helpMap, levelName, levelKey, pointName, pointKey, expName, expKey));
+            levelMap.put(key, new LevelSystem(name, ppl, maxlevel, formula, helpMap, levelName, levelKey, pointName, pointKey, expName, expKey));
         }
     }
     
     private void loadPlayers()
     {
+        pfile = new File(getDataFolder(), "players.yml");
         pconfig = YamlConfiguration.loadConfiguration(pfile);
         
         for (String key : pconfig.getKeys(false))
@@ -108,19 +123,13 @@ public class SkillLevels extends JavaPlugin implements Listener
                     levelMap.get(system).addLevelPlayer(key, pconfig.getInt(key + "." + system + ".exp"), pconfig.getInt(key + "." + system + ".usedskillp"));
     }
     
-    @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent e)
-    {
-        savePlayer(e.getPlayer().getName());
-    }
-    
     private void savePlayer(String p)
     {
         for (Entry<String, LevelSystem> system : levelMap.entrySet())
         {
-            LevelPlayer lp = system.getValue().getPlayer(p);
-            pconfig.set(p + "." + system.getKey() + ".exp", lp.getExp());
-            pconfig.set(p + "." + system.getKey() + ".usedskillp", lp.getExp());
+            LevelSystem ls = system.getValue();
+            pconfig.set(p + "." + system.getKey() + ".exp", ls.getExp(p));
+            pconfig.set(p + "." + system.getKey() + ".usedskillp", ls.getUsedPoints(p));
         }
         
         try

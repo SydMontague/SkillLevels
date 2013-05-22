@@ -7,23 +7,24 @@ import org.bukkit.entity.Player;
 
 public class LevelSystem
 {
-    private int pointsperlevel;
-    private int maxlevel;
-    private String formula;
-    private int[] preCalc = null;
-    
-    private String levelKey;
     private String expKey;
-    private String pointKey;
+    private String expName;
+    private String formula;
+    private String levelKey;
+    private String systemName;
     
     private String levelName;
-    private String expName;
-    private String pointName;
-    
-    private Map<LevelAction, Map<String, Integer>> xpperaction = new HashMap<LevelAction, Map<String, Integer>>();
+    private int maxlevel;
     private Map<String, LevelPlayer> playerMap = new HashMap<String, LevelPlayer>();
     
-    public LevelSystem(int ppl, int maxlevel, String form, Map<LevelAction, Map<String, Integer>> xpmap, String levelName, String levelKey, String pointName, String pointKey, String expName, String expKey)
+    private String pointKey;
+    private String pointName;
+    private int pointsperlevel;
+    
+    private int[] preCalc = null;
+    private Map<LevelAction, Map<String, Integer>> xpperaction = new HashMap<LevelAction, Map<String, Integer>>();
+    
+    public LevelSystem(String name, int ppl, int maxlevel, String form, Map<LevelAction, Map<String, Integer>> xpmap, String levelName, String levelKey, String pointName, String pointKey, String expName, String expKey)
     {
         this.maxlevel = maxlevel;
         
@@ -34,6 +35,7 @@ public class LevelSystem
         setFormula(form);
         xpperaction = xpmap;
         
+        setSystemName(name);
         setLevelName(levelName);
         setPointName(pointName);
         setExpName(expName);
@@ -42,12 +44,40 @@ public class LevelSystem
         setPointKey(pointKey);
     }
     
-    private void preCalcLevels()
+    public void addExp(int amount, Player p)
     {
-        preCalc = new int[maxlevel + 1];
-        
-        for (int i = 0; i <= maxlevel; i++)
-            preCalc[i] = calcExpAtLevel(i);
+        addExp(amount, p.getName());
+    }
+    
+    public void addExp(int amount, String p)
+    {
+        getPlayer(p).addExp(amount);
+    }
+    
+    public void addLevel(int level, Player p)
+    {
+        addLevel(level, p.getName());
+    }
+    
+    public void addLevel(int level, String p)
+    {
+        int init = getLevel(p);
+        getPlayer(p).addExp(getExpAtLevel(init + level) - getExpAtLevel(init));
+    }
+    
+    public void addLevelPlayer(String name, int exp, int usedpoints)
+    {
+        playerMap.put(name, new LevelPlayer(exp, usedpoints));
+    }
+    
+    public void addUsedPoints(int amount, Player p)
+    {
+        addUsedPoints(amount, p.getName());
+    }
+    
+    public void addUsedPoints(int amount, String p)
+    {
+        getPlayer(p).addUsedPoints(amount);
     }
     
     public int calcExpAtLevel(int x)
@@ -55,10 +85,71 @@ public class LevelSystem
         return Integer.valueOf(getMathResult(formula, x, formula));
     }
     
-    // TODO another method to make exp -> level
+    public int getExp(Player p)
+    {
+        return getExp(p.getName());
+    }
+    
+    public int getExp(String p)
+    {
+        return getPlayer(p).getExp();
+    }
+    
+    public int getExpAtLevel(int i)
+    {
+        if (i > maxlevel)
+            return -1;
+        
+        return preCalc != null ? preCalc[i] : calcExpAtLevel(i);
+    }
+    
+    public String getExpKey()
+    {
+        return expKey;
+    }
+    
+    public String getExpName()
+    {
+        return expName;
+    }
+    
+    public String getFormula()
+    {
+        return formula;
+    }
+    
+    public int getLevel(int exp)
+    {
+        for (int i = 0; i <= maxlevel; i++)
+            if (getExpAtLevel(i) > exp)
+                return i - 1;
+        
+        return -1;
+    }
+    
+    public int getLevel(Player p)
+    {
+        return getLevel(p.getName());
+    }
+    
+    public int getLevel(String p)
+    {
+        return getLevel(getPlayer(p).getExp());
+    }
+    
+    public String getLevelKey()
+    {
+        return levelKey;
+    }
+    
+    public String getLevelName()
+    {
+        return levelName;
+    }
+    
     private String getMathResult(String form, double x, String completForm)
     {
-        if (x <= 0)
+        if (x <= 0 || x > maxlevel)
             return "0";
         
         form = form.replace("x", String.valueOf(x));
@@ -118,28 +209,6 @@ public class LevelSystem
         return String.valueOf(result);
     }
     
-    public int getLevel(int exp)
-    {
-        for (int i = 0;; i++)
-            if (getExpAtLevel(i) > exp)
-                return i - 1;
-    }
-    
-    public int getExpAtLevel(int i)
-    {
-        return preCalc != null ? preCalc[i] : calcExpAtLevel(i);
-    }
-    
-    public void addLevelPlayer(String name, int exp, int usedpoints)
-    {
-        playerMap.put(name, new LevelPlayer(exp, usedpoints));
-    }
-    
-    public Map<String, LevelPlayer> getPlayers()
-    {
-        return playerMap;
-    }
-    
     public LevelPlayer getPlayer(Player p)
     {
         return getPlayer(p.getName());
@@ -150,34 +219,9 @@ public class LevelSystem
         return playerMap.get(name);
     }
     
-    public String getLevelName()
+    public Map<String, LevelPlayer> getPlayers()
     {
-        return levelName;
-    }
-    
-    public void setLevelName(String levelName)
-    {
-        this.levelName = levelName;
-    }
-    
-    public String getPointName()
-    {
-        return pointName;
-    }
-    
-    public void setPointName(String pointName)
-    {
-        this.pointName = pointName;
-    }
-    
-    public String getExpName()
-    {
-        return expName;
-    }
-    
-    public void setExpName(String expName)
-    {
-        this.expName = expName;
+        return playerMap;
     }
     
     public String getPointKey()
@@ -185,34 +229,44 @@ public class LevelSystem
         return pointKey;
     }
     
-    public void setPointKey(String pointKey)
+    public String getPointName()
     {
-        this.pointKey = pointKey;
+        return pointName;
     }
     
-    public String getExpKey()
+    public int getPoints(Player p)
     {
-        return expKey;
+        return getPoints(p.getName());
     }
     
-    public void setExpKey(String expKey)
+    public int getPoints(String p)
     {
-        this.expKey = expKey;
+        return getLevel(p) * getPointsPerLevel() - getPlayer(p).getUsedPoints();
     }
     
-    public String getLevelKey()
+    public int getPointsPerLevel()
     {
-        return levelKey;
+        return pointsperlevel;
     }
     
-    public void setLevelKey(String levelKey)
+    public String getSystemName()
     {
-        this.levelKey = levelKey;
+        return systemName;
+    }
+    
+    public int getUsedPoints(Player p)
+    {
+        return getUsedPoints(p.getName());
+    }
+    
+    public int getUsedPoints(String p)
+    {
+        return getPlayer(p).getUsedPoints();
     }
     
     public void handleAction(LevelAction action, String name, int amount, String player)
     {
-        if (!xpperaction.containsKey(name))
+        if (!xpperaction.containsKey(action) || !xpperaction.get(action).containsKey(name))
             return;
         
         if (!playerMap.containsKey(player))
@@ -221,9 +275,108 @@ public class LevelSystem
         playerMap.get(player).addExp(xpperaction.get(action).get(name) * amount);
     }
     
-    public int getPointsPerLevel()
+    public boolean hasPlayer(Player p)
     {
-        return pointsperlevel;
+        return hasPlayer(p.getName());
+    }
+    
+    public boolean hasPlayer(String p)
+    {
+        return playerMap.containsKey(p);
+    }
+    
+    private void preCalcLevels()
+    {
+        preCalc = new int[maxlevel + 1];
+        
+        for (int i = 0; i <= maxlevel; i++)
+            preCalc[i] = calcExpAtLevel(i);
+    }
+    
+    public void revokeExp(int amount, Player p)
+    {
+        revokeExp(amount, p.getName());
+    }
+    
+    public void revokeExp(int amount, String p)
+    {
+        getPlayer(p).revokeExp(amount);
+    }
+    
+    public void revokeLevel(int level, Player p)
+    {
+        revokeLevel(level, p.getName());
+    }
+    
+    public void revokeLevel(int level, String p)
+    {
+        int init = getLevel(p);
+        getPlayer(p).revokeExp(getExpAtLevel(init + level) - getExpAtLevel(init));
+    }
+    
+    public void revokeUsedPoints(int amount, Player p)
+    {
+        revokeUsedPoints(amount, p.getName());
+    }
+    
+    public void revokeUsedPoints(int amount, String p)
+    {
+        getPlayer(p).revokeUsedPoints(amount);
+    }
+    
+    public void setExp(int amount, Player p)
+    {
+        setExp(amount, p.getName());
+    }
+    
+    public void setExp(int amount, String p)
+    {
+        getPlayer(p).setExp(amount);
+    }
+    
+    public void setExpKey(String expKey)
+    {
+        this.expKey = expKey;
+    }
+    
+    public void setExpName(String expName)
+    {
+        this.expName = expName;
+    }
+    
+    public void setFormula(String formula)
+    {
+        this.formula = formula;
+    }
+    
+    public void setLevel(int level, Player p)
+    {
+        setLevel(level, p.getName());
+    }
+    
+    public void setLevel(int level, String p)
+    {
+        getPlayer(p).setExp(getExpAtLevel(level));
+    }
+    
+    public void setLevelKey(String levelKey)
+    {
+        this.levelKey = levelKey;
+    }
+    
+    public void setLevelName(String levelName)
+    {
+        this.levelName = levelName;
+    }
+    
+    public void setPointKey(String pointKey)
+    {
+        this.pointKey = pointKey;
+    }
+    
+    public void setPointName(String pointName)
+    {
+        this.pointName = pointName;
     }
     
     public void setPointsPerLevel(int pointsperlevel)
@@ -231,13 +384,18 @@ public class LevelSystem
         this.pointsperlevel = pointsperlevel;
     }
     
-    public String getFormula()
+    public void setSystemName(String systemName)
     {
-        return formula;
+        this.systemName = systemName;
     }
     
-    public void setFormula(String formula)
+    public void setUsedPoints(int amount, Player p)
     {
-        this.formula = formula;
+        setUsedPoints(amount, p.getName());
+    }
+    
+    public void setUsedPoints(int amount, String p)
+    {
+        getPlayer(p).setUsedPoints(amount);
     }
 }

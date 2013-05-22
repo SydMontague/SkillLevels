@@ -28,7 +28,7 @@ public class LevelListener implements Listener
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onMobKill(EntityDamageByEntityEvent e)
     {
-        if ((e.getDamager() instanceof Player))
+        if (e.getDamager() instanceof Player)
             if (e.getEntity().isDead())
                 plugin.handleAction(LevelAction.MOBKILL, e.getEntityType().getName(), ((Player) e.getDamager()).getName());
             else

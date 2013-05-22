@@ -17,25 +17,25 @@ public class SkillExpHandler implements Handler<Integer>
     @Override
     public boolean hasCurrency(Player p, Integer amount)
     {
-        return system.getPlayer(p).getExp() >= amount;
+        return system.getExp(p) >= amount;
     }
     
     @Override
     public void withdrawCurrency(Player p, Integer amount)
     {
-        system.getPlayer(p).revokeExp(amount);
+        system.revokeExp(amount, p);
     }
     
     @Override
     public void giveCurrency(Player p, Integer amount)
     {
-        system.getPlayer(p).addExp(amount);
+        system.addExp(amount, p);
     }
     
     @Override
     public void setCurrency(Player p, Integer amount)
     {
-        system.getPlayer(p).setExp(amount);
+        system.setExp(amount, p);
     }
     
     @Override
