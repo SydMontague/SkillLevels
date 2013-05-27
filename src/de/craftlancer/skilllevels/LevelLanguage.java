@@ -24,6 +24,7 @@ public class LevelLanguage
     public static String RESET_SUCCESS;
     public static String RESET_NOTIFY;
     public static String RELOAD_SUCCESS;
+    public static String LEVEL_UP;
     
     // TODO write default stringconfig
     protected static void loadStrings(FileConfiguration config)
@@ -48,6 +49,7 @@ public class LevelLanguage
         RESET_SUCCESS = config.getString("string.RESET_SUCCESS");
         RESET_NOTIFY = config.getString("string.RESET_NOTIFY");
         RELOAD_SUCCESS = config.getString("string.RELOAD_SUCCESS");
+        LEVEL_UP = config.getString("string.LEVEL_UP");
     }
     
 }

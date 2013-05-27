@@ -3,6 +3,7 @@ package de.craftlancer.skilllevels;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class LevelSystem
@@ -272,7 +273,11 @@ public class LevelSystem
         if (!playerMap.containsKey(player))
             playerMap.put(player, new LevelPlayer(0, 0));
         
-        playerMap.get(player).addExp(xpperaction.get(action).get(name) * amount);
+        int initlevel = getLevel(player);
+        addExp(xpperaction.get(action).get(name) * amount, player);
+        
+        if(getLevel(player) > initlevel && Bukkit.getPlayerExact(player) != null)
+            Bukkit.getPlayerExact(player).sendMessage(LevelLanguage.LEVEL_UP);            
     }
     
     public boolean hasPlayer(Player p)

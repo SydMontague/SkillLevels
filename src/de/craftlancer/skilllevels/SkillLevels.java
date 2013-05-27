@@ -15,6 +15,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import de.craftlancer.currencyhandler.CurrencyHandler;
+import de.craftlancer.skilllevels.commands.LevelCommands;
 import de.craftlancer.skilllevels.handlers.SkillExpHandler;
 import de.craftlancer.skilllevels.handlers.SkillLevelHandler;
 import de.craftlancer.skilllevels.handlers.SkillPointHandler;
@@ -35,6 +36,8 @@ public class SkillLevels extends JavaPlugin implements Listener
         
         getServer().getPluginManager().registerEvents(this, this);
         getServer().getPluginManager().registerEvents(new LevelListener(this), this);
+        
+        getCommand("level").setExecutor(new LevelCommands(this));
         
         if (config.getBoolean("general.useCurrencyHandler", false) && getServer().getPluginManager().getPlugin("CurrencyHandler") != null)
             for (LevelSystem ls : levelMap.values())
