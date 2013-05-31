@@ -32,7 +32,7 @@ public class LevelListener implements Listener
             if (e.getEntity().isDead())
                 plugin.handleAction(LevelAction.MOBKILL, e.getEntityType().getName(), ((Player) e.getDamager()).getName());
             else
-                plugin.handleAction(LevelAction.MOBDAMAGE, e.getEntityType().getName(), ((Player) e.getDamager()).getName());
+                plugin.handleAction(LevelAction.MOBDAMAGE, e.getEntityType().getName(), e.getDamage(), ((Player) e.getDamager()).getName());
     }
     
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

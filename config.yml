@@ -1,0 +1,68 @@
+general:
+    useCurrencyHandler: false
+systems:
+    example:
+        name: Examplesystem
+        formula: x*10+recur(x-1)
+        pointsperlevel: 5
+        maxlevel: 100
+        levelKey: deflevel
+        levelName: Level
+        expKey: defexp
+        expName: Experience
+        pointKey: defpoints
+        pointName: Skillpoints
+        actions:
+            MOBKILL:
+                ZOMBIE: 5
+                SPIDER: 4
+            BLOCKDESTROY:
+                DIAMOND_ORE: 10
+string:
+    COMMAND_PERMISSION: "You don't have enough permission to run this command."
+    COMMAND_SYSTEM_NOT_EXIST: "This level system does not exist."
+    COMMAND_PLAYER_NOT_EXIST: "This player does not exist."
+    COMMAND_ARGUMENTS: "You need to specify more arguments for this command."
+    COMMAND_ADDSETRESET_ARGERROR: "You need to specify a type. (xp, points or level)"
+    COMMAND_NOT_A_NUMBER: "The value you provided is not a number!"
+    HELP_COMMAND_HELP: |
+                    /level help [command] - view a command's help page
+                    /level stats [player] - shows your or the player's stats
+    HELP_COMMAND_HELP_ADMIN: |
+                    /level add <player> <system> <xp|points|level> <amount>
+                    /level revoke <player> <system> <xp|points|level> <amount>
+                    /level set <player> <system> <xp|points|level> <amount>
+                    Add, set or revoke players's stats in a specified level system
+                    /level reset <player> - set a player's stats to 0
+                    /level reload - reload the configuration
+    HELP_COMMAND_STATS: |
+                    Usage: /level stats [player]
+                    View you own or another player's stats.
+                    Example: /level stats notch
+    HELP_COMMAND_ADD:   |
+                    Usage: /level add <player> <system> <xp|points|level> <amount>
+                    Add a specified amount of xp, points or level of a specific 
+                    level system to a player.
+                    Example: /level add notch default level 100
+    HELP_COMMAND_REVOKE: |
+                    Usage: /level revoke <player> <system> <xp|points|level> <amount>
+                    Revokes a specified amount of xp, points or level of a specific 
+                    level system from a player.
+                    Example: /level revoke notch default xp 10
+    HELP_COMMAND_SET:   |
+                    Usage: /level set <player> <system> <xp|points|level> <amount>
+                    Set the xp, points or level of a specific level system of a player.
+                    Example: /level set notch default points 150
+    HELP_COMMAND_RESET: |
+                    Usage: /level reset <player>
+                    Reset all levels of a player to 0. This command can not be undone.
+                    Example: /level reset notch
+    HELP_COMMAND_RELOAD: |
+                    Usage: /level reload
+                    Reload the plugin's config.
+    RESET_SUCCESS: "Stats successfully resetted."
+    RESET_NOTIFY: "Your levels were resetted."
+    RELOAD_SUCCESS: "Reload successful."
+    LEVEL_UP: "Level Up! You are now level %level% at %systemname%."
+
+                    

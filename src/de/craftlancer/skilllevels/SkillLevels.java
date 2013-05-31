@@ -21,6 +21,7 @@ import de.craftlancer.skilllevels.handlers.SkillLevelHandler;
 import de.craftlancer.skilllevels.handlers.SkillPointHandler;
 
 //TODO look for a better name
+//TODO Collection preCalc for endless LevelSystems
 public class SkillLevels extends JavaPlugin implements Listener
 {
     private FileConfiguration config;

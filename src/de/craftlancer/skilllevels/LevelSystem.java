@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-
+//TODO add permissions for systems
 public class LevelSystem
 {
     private String expKey;
@@ -276,8 +276,13 @@ public class LevelSystem
         int initlevel = getLevel(player);
         addExp(xpperaction.get(action).get(name) * amount, player);
         
-        if(getLevel(player) > initlevel && Bukkit.getPlayerExact(player) != null)
-            Bukkit.getPlayerExact(player).sendMessage(LevelLanguage.LEVEL_UP);            
+        if (getLevel(player) > initlevel && Bukkit.getPlayerExact(player) != null)
+        {
+            String msg = LevelLanguage.LEVEL_UP;
+            msg = msg.replace("%level%", String.valueOf(getLevel(player)));
+            msg = msg.replace("%system%", getSystemName());
+            Bukkit.getPlayerExact(player).sendMessage(msg);
+        }
     }
     
     public boolean hasPlayer(Player p)
