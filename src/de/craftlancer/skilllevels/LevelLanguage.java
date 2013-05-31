@@ -20,13 +20,12 @@ public class LevelLanguage
     public static String HELP_COMMAND_RESET;
     public static String HELP_COMMAND_RELOAD;
     
-    //public static String STATS_COMMAND;
+    // public static String STATS_COMMAND;
     public static String RESET_SUCCESS;
     public static String RESET_NOTIFY;
     public static String RELOAD_SUCCESS;
     public static String LEVEL_UP;
     
-    // TODO write default stringconfig
     protected static void loadStrings(FileConfiguration config)
     {
         COMMAND_PERMISSION = config.getString("string.COMMAND_PERMISSION");
@@ -45,7 +44,7 @@ public class LevelLanguage
         HELP_COMMAND_RESET = config.getString("string.HELP_COMMAND_RESET");
         HELP_COMMAND_RELOAD = config.getString("string.HELP_COMMAND_RELOAD");
         
-        //STATS_COMMAND = config.getString("string.STATS_COMMAND");
+        // STATS_COMMAND = config.getString("string.STATS_COMMAND");
         RESET_SUCCESS = config.getString("string.RESET_SUCCESS");
         RESET_NOTIFY = config.getString("string.RESET_NOTIFY");
         RELOAD_SUCCESS = config.getString("string.RELOAD_SUCCESS");

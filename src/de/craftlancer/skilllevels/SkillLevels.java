@@ -20,8 +20,8 @@ import de.craftlancer.skilllevels.handlers.SkillExpHandler;
 import de.craftlancer.skilllevels.handlers.SkillLevelHandler;
 import de.craftlancer.skilllevels.handlers.SkillPointHandler;
 
-//TODO look for a better name
-//TODO Collection preCalc for endless LevelSystems
+// TODO add comments
+// TODO add API
 public class SkillLevels extends JavaPlugin implements Listener
 {
     private FileConfiguration config;
@@ -56,15 +56,16 @@ public class SkillLevels extends JavaPlugin implements Listener
             savePlayer(p.getName());
     }
     
-    public void handleAction(LevelAction action, String name, String player)
+    public void handleAction(LevelAction action, String name, Player player)
     {
         handleAction(action, name, 1, player);
     }
     
-    public void handleAction(LevelAction action, String name, int amount, String player)
+    public void handleAction(LevelAction action, String name, int amount, Player player)
     {
         for (LevelSystem ls : levelMap.values())
-            ls.handleAction(action, name, amount, player);
+            if (player.hasPermission("level.system." + ls.getSystemKey()))
+                ls.handleAction(action, name, amount, player.getName());
     }
     
     public Map<String, LevelSystem> getLevelSystems()
@@ -112,7 +113,7 @@ public class SkillLevels extends JavaPlugin implements Listener
                 helpMap.put(LevelAction.valueOf(action), xpMap);
             }
             
-            levelMap.put(key, new LevelSystem(name, ppl, maxlevel, formula, helpMap, levelName, levelKey, pointName, pointKey, expName, expKey));
+            levelMap.put(key, new LevelSystem(key, name, ppl, maxlevel, formula, helpMap, levelName, levelKey, pointName, pointKey, expName, expKey));
         }
     }
     

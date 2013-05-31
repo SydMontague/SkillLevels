@@ -5,13 +5,14 @@ import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-//TODO add permissions for systems
+
 public class LevelSystem
 {
     private String expKey;
     private String expName;
     private String formula;
     private String levelKey;
+    private String systemKey;
     private String systemName;
     
     private String levelName;
@@ -23,14 +24,17 @@ public class LevelSystem
     private int pointsperlevel;
     
     private int[] preCalc = null;
+    private Map<Integer, Integer> preCalcOpen = null;
     private Map<LevelAction, Map<String, Integer>> xpperaction = new HashMap<LevelAction, Map<String, Integer>>();
     
-    public LevelSystem(String name, int ppl, int maxlevel, String form, Map<LevelAction, Map<String, Integer>> xpmap, String levelName, String levelKey, String pointName, String pointKey, String expName, String expKey)
+    public LevelSystem(String key, String name, int ppl, int maxlevel, String form, Map<LevelAction, Map<String, Integer>> xpmap, String levelName, String levelKey, String pointName, String pointKey, String expName, String expKey)
     {
         this.maxlevel = maxlevel;
         
         if (maxlevel > 0)
             preCalcLevels();
+        else
+            preCalcOpen = new HashMap<Integer, Integer>(60);
         
         setPointsPerLevel(ppl);
         setFormula(form);
@@ -83,7 +87,12 @@ public class LevelSystem
     
     public int calcExpAtLevel(int x)
     {
-        return Integer.valueOf(getMathResult(formula, x, formula));
+        int value = Integer.valueOf(getMathResult(formula, x, formula));
+        
+        if(preCalcOpen != null)
+            preCalcOpen.put(x, value);
+        
+        return value;
     }
     
     public int getExp(Player p)
@@ -98,10 +107,12 @@ public class LevelSystem
     
     public int getExpAtLevel(int i)
     {
-        if (i > maxlevel)
+        if (maxlevel == 0)
+            return preCalcOpen.containsKey(i) ? preCalcOpen.get(i) : calcExpAtLevel(i);
+        else if (i <= maxlevel)
+            return preCalc != null ? preCalc[i] : calcExpAtLevel(i);
+        else
             return -1;
-        
-        return preCalc != null ? preCalc[i] : calcExpAtLevel(i);
     }
     
     public String getExpKey()
@@ -407,5 +418,10 @@ public class LevelSystem
     public void setUsedPoints(int amount, String p)
     {
         getPlayer(p).setUsedPoints(amount);
+    }
+    
+    public String getSystemKey()
+    {
+        return systemKey;
     }
 }

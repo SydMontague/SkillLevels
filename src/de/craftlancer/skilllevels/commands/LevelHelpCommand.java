@@ -27,7 +27,7 @@ public class LevelHelpCommand extends LevelSubCommand
         {
             sender.sendMessage(LevelLanguage.HELP_COMMAND_HELP);
             
-            if (sender.hasPermission("levels.admin")) // TODO add permissions
+            if (sender.hasPermission("levels.admin"))
                 sender.sendMessage(LevelLanguage.HELP_COMMAND_HELP_ADMIN);
         }
         else if (args[1].equalsIgnoreCase("stats"))
