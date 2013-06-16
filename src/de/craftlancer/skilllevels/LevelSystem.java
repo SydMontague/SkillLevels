@@ -39,7 +39,8 @@ public class LevelSystem
         setPointsPerLevel(ppl);
         setFormula(form);
         xpperaction = xpmap;
-        
+
+        systemKey = key;
         setSystemName(name);
         setLevelName(levelName);
         setPointName(pointName);

@@ -30,8 +30,8 @@ public class LevelCommands implements TabExecutor
     {
         if (args.length == 0 || !commands.containsKey(args[0]))
             return false;
-        else
-            commands.get(args[0]).execute(sender, cmd, label, args);
+        
+        commands.get(args[0]).execute(sender, cmd, label, args);
         
         return true;
     }
@@ -50,10 +50,7 @@ public class LevelCommands implements TabExecutor
                         l.remove(l);
                 return l;
             default:
-                if (!commands.containsKey(args[0]))
-                    return null;
-                else
-                    return commands.get(args[0]).onTabComplete(args);
+                return commands.containsKey(args[0]) ? commands.get(args[0]).onTabComplete(args) : null;
         }
     }
     
