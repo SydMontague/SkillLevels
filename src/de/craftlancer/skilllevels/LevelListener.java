@@ -1,5 +1,7 @@
 package de.craftlancer.skilllevels;
 
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -7,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTameEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.FurnaceExtractEvent;
@@ -26,13 +29,17 @@ public class LevelListener implements Listener
     }
     
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onMobKill(EntityDamageByEntityEvent e)
+    public void onMobDamage(EntityDamageByEntityEvent e)
     {
         if (e.getDamager() instanceof Player)
-            if (e.getEntity().isDead())
-                plugin.handleAction(LevelAction.MOBKILL, e.getEntityType().getName(), (Player) e.getDamager());
-            else
-                plugin.handleAction(LevelAction.MOBDAMAGE, e.getEntityType().getName(), e.getDamage(), ((Player) e.getDamager()));
+            plugin.handleAction(LevelAction.MOBDAMAGE, e.getEntityType().getName(), (int) e.getDamage(), ((Player) e.getDamager()));
+    }
+    
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onMobKill(EntityDeathEvent e)
+    {
+        if (e.getEntity().getKiller() != null)
+            plugin.handleAction(LevelAction.MOBKILL, e.getEntityType().getName(), 1, e.getEntity().getKiller());
     }
     
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

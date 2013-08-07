@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
+
 public class Utils
 {
     /**
@@ -40,5 +42,10 @@ public class Utils
                 result.add(str);
         
         return result;
+    }
+    
+    public static void debug(String s)
+    {
+        Bukkit.getLogger().info("[Debug] " + s);
     }
 }

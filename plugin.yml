@@ -5,7 +5,7 @@ author: SydMontague
 description: Create custom level systems!
 softdepend: [CurrencyHandler]
 commands:
-    skill:
+    level:
         description: Root command for SkillLevels   
         usage: |
             /level help [command] - view a command's help page

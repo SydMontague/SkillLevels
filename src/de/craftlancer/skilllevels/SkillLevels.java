@@ -22,6 +22,7 @@ import de.craftlancer.skilllevels.handlers.SkillPointHandler;
 
 // TODO add comments
 // TODO add API
+// TODO make the config more case insensitive
 public class SkillLevels extends JavaPlugin implements Listener
 {
     private FileConfiguration config;
@@ -64,8 +65,14 @@ public class SkillLevels extends JavaPlugin implements Listener
     public void handleAction(LevelAction action, String name, int amount, Player player)
     {
         for (LevelSystem ls : levelMap.values())
-            if (player.hasPermission("level.system." + ls.getSystemKey()))
+            if (player.hasPermission("levels.system." + ls.getSystemKey()))
                 ls.handleAction(action, name, amount, player.getName());
+    }
+    
+    public void handleAction(LevelAction action, String name, int amount, String user)
+    {
+        for (LevelSystem ls : levelMap.values())
+            ls.handleAction(action, name, amount, user);
     }
     
     public Map<String, LevelSystem> getLevelSystems()
@@ -86,13 +93,14 @@ public class SkillLevels extends JavaPlugin implements Listener
         
         reloadConfig();
         config = getConfig();
+        LevelLanguage.loadStrings(config);
         
         for (String key : config.getConfigurationSection("systems").getKeys(false))
         {
             String name = config.getString("systems." + key + ".name");
-            String formula = config.getString("systems." + key + ".forumla");
+            String formula = config.getString("systems." + key + ".formula");
             int ppl = config.getInt("systsms." + key + ".pointsperlevel");
-            int maxlevel = config.getInt("systsms." + key + ".maxlevel");
+            int maxlevel = config.getInt("systems." + key + ".maxlevel");
             
             String levelKey = config.getString("systems." + key + ".levelKey");
             String expKey = config.getString("systems." + key + ".expKey");
@@ -112,7 +120,7 @@ public class SkillLevels extends JavaPlugin implements Listener
                 
                 helpMap.put(LevelAction.valueOf(action), xpMap);
             }
-            
+                        
             levelMap.put(key, new LevelSystem(key, name, ppl, maxlevel, formula, helpMap, levelName, levelKey, pointName, pointKey, expName, expKey));
         }
     }

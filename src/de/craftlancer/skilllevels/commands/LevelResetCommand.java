@@ -25,13 +25,11 @@ public class LevelResetCommand extends LevelSubCommand
             sender.sendMessage(LevelLanguage.COMMAND_PERMISSION);
         else if (args.length < 2)
             sender.sendMessage(LevelLanguage.COMMAND_ARGUMENTS);
-        else if (Bukkit.getPlayerExact(args[1]) == null)
-            sender.sendMessage(LevelLanguage.COMMAND_PLAYER_NOT_EXIST);
         else
         {
             for (LevelSystem s : plugin.getLevelSystems().values())
             {
-                if (!s.hasPlayer(args[1]))
+                if (!s.hasUser(args[1]))
                     continue;
                 
                 s.setExp(0, args[1]);

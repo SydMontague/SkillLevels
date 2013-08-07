@@ -17,7 +17,7 @@ public class LevelSystem
     
     private String levelName;
     private int maxlevel;
-    private Map<String, LevelPlayer> playerMap = new HashMap<String, LevelPlayer>();
+    private Map<String, LevelPlayer> userMap = new HashMap<String, LevelPlayer>();
     
     private String pointKey;
     private String pointName;
@@ -31,15 +31,10 @@ public class LevelSystem
     {
         this.maxlevel = maxlevel;
         
-        if (maxlevel > 0)
-            preCalcLevels();
-        else
-            preCalcOpen = new HashMap<Integer, Integer>(60);
-        
         setPointsPerLevel(ppl);
         setFormula(form);
         xpperaction = xpmap;
-
+        
         systemKey = key;
         setSystemName(name);
         setLevelName(levelName);
@@ -48,6 +43,11 @@ public class LevelSystem
         setExpKey(expKey);
         setLevelKey(levelKey);
         setPointKey(pointKey);
+        
+        if (maxlevel > 0)
+            preCalcLevels();
+        else
+            preCalcOpen = new HashMap<Integer, Integer>(60);
     }
     
     public void addExp(int amount, Player p)
@@ -57,7 +57,7 @@ public class LevelSystem
     
     public void addExp(int amount, String p)
     {
-        getPlayer(p).addExp(amount);
+        getUser(p).addExp(amount);
     }
     
     public void addLevel(int level, Player p)
@@ -68,12 +68,12 @@ public class LevelSystem
     public void addLevel(int level, String p)
     {
         int init = getLevel(p);
-        getPlayer(p).addExp(getExpAtLevel(init + level) - getExpAtLevel(init));
+        getUser(p).addExp(getExpAtLevel(init + level) - getExpAtLevel(init));
     }
     
     public void addLevelPlayer(String name, int exp, int usedpoints)
     {
-        playerMap.put(name, new LevelPlayer(exp, usedpoints));
+        userMap.put(name, new LevelPlayer(exp, usedpoints));
     }
     
     public void addUsedPoints(int amount, Player p)
@@ -83,14 +83,14 @@ public class LevelSystem
     
     public void addUsedPoints(int amount, String p)
     {
-        getPlayer(p).addUsedPoints(amount);
+        getUser(p).addUsedPoints(amount);
     }
     
     public int calcExpAtLevel(int x)
     {
-        int value = Integer.valueOf(getMathResult(formula, x, formula));
+        int value = Double.valueOf(getMathResult(formula, x, formula)).intValue();
         
-        if(preCalcOpen != null)
+        if (preCalcOpen != null)
             preCalcOpen.put(x, value);
         
         return value;
@@ -103,11 +103,13 @@ public class LevelSystem
     
     public int getExp(String p)
     {
-        return getPlayer(p).getExp();
+        return hasUser(p) ? getUser(p).getExp() : 0;
     }
     
     public int getExpAtLevel(int i)
     {
+        if (i < 0)
+            return -1;
         if (maxlevel == 0)
             return preCalcOpen.containsKey(i) ? preCalcOpen.get(i) : calcExpAtLevel(i);
         else if (i <= maxlevel)
@@ -147,7 +149,7 @@ public class LevelSystem
     
     public int getLevel(String p)
     {
-        return getLevel(getPlayer(p).getExp());
+        return getLevel(getUser(p).getExp());
     }
     
     public String getLevelKey()
@@ -222,19 +224,19 @@ public class LevelSystem
         return String.valueOf(result);
     }
     
-    public LevelPlayer getPlayer(Player p)
+    public LevelPlayer getUser(Player p)
     {
-        return getPlayer(p.getName());
+        return getUser(p.getName());
     }
     
-    public LevelPlayer getPlayer(String name)
+    public LevelPlayer getUser(String name)
     {
-        return playerMap.get(name);
+        return userMap.get(name.toLowerCase());
     }
     
     public Map<String, LevelPlayer> getPlayers()
     {
-        return playerMap;
+        return userMap;
     }
     
     public String getPointKey()
@@ -254,7 +256,7 @@ public class LevelSystem
     
     public int getPoints(String p)
     {
-        return getLevel(p) * getPointsPerLevel() - getPlayer(p).getUsedPoints();
+        return getLevel(p) * getPointsPerLevel() - getUser(p).getUsedPoints();
     }
     
     public int getPointsPerLevel()
@@ -274,37 +276,40 @@ public class LevelSystem
     
     public int getUsedPoints(String p)
     {
-        return getPlayer(p).getUsedPoints();
+        return getUser(p).getUsedPoints();
     }
     
-    public void handleAction(LevelAction action, String name, int amount, String player)
+    public void handleAction(LevelAction action, String name, int amount, String user)
     {
+        name = name.toUpperCase();
+        
         if (!xpperaction.containsKey(action) || !xpperaction.get(action).containsKey(name))
             return;
         
-        if (!playerMap.containsKey(player))
-            playerMap.put(player, new LevelPlayer(0, 0));
+        if (!hasUser(user))
+            userMap.put(user.toLowerCase(), new LevelPlayer(0, 0));
         
-        int initlevel = getLevel(player);
-        addExp(xpperaction.get(action).get(name) * amount, player);
+        int initlevel = getLevel(user);
+        addExp(xpperaction.get(action).get(name) * amount, user);
+        int newlevel = getLevel(user);
         
-        if (getLevel(player) > initlevel && Bukkit.getPlayerExact(player) != null)
+        if (newlevel > initlevel && Bukkit.getPlayerExact(user) != null)
         {
             String msg = LevelLanguage.LEVEL_UP;
-            msg = msg.replace("%level%", String.valueOf(getLevel(player)));
-            msg = msg.replace("%system%", getSystemName());
-            Bukkit.getPlayerExact(player).sendMessage(msg);
+            msg = msg.replace("%level%", String.valueOf(newlevel));
+            msg = msg.replace("%systemname%", getSystemName());
+            Bukkit.getPlayerExact(user).sendMessage(msg);
         }
     }
     
-    public boolean hasPlayer(Player p)
+    public boolean hasUser(Player p)
     {
-        return hasPlayer(p.getName());
+        return hasUser(p.getName());
     }
     
-    public boolean hasPlayer(String p)
+    public boolean hasUser(String user)
     {
-        return playerMap.containsKey(p);
+        return userMap.containsKey(user.toLowerCase());
     }
     
     private void preCalcLevels()
@@ -322,7 +327,7 @@ public class LevelSystem
     
     public void revokeExp(int amount, String p)
     {
-        getPlayer(p).revokeExp(amount);
+        getUser(p).revokeExp(amount);
     }
     
     public void revokeLevel(int level, Player p)
@@ -333,7 +338,7 @@ public class LevelSystem
     public void revokeLevel(int level, String p)
     {
         int init = getLevel(p);
-        getPlayer(p).revokeExp(getExpAtLevel(init + level) - getExpAtLevel(init));
+        getUser(p).revokeExp(getExpAtLevel(init + level) - getExpAtLevel(init));
     }
     
     public void revokeUsedPoints(int amount, Player p)
@@ -343,7 +348,7 @@ public class LevelSystem
     
     public void revokeUsedPoints(int amount, String p)
     {
-        getPlayer(p).revokeUsedPoints(amount);
+        getUser(p).revokeUsedPoints(amount);
     }
     
     public void setExp(int amount, Player p)
@@ -353,7 +358,7 @@ public class LevelSystem
     
     public void setExp(int amount, String p)
     {
-        getPlayer(p).setExp(amount);
+        getUser(p).setExp(amount);
     }
     
     public void setExpKey(String expKey)
@@ -378,7 +383,7 @@ public class LevelSystem
     
     public void setLevel(int level, String p)
     {
-        getPlayer(p).setExp(getExpAtLevel(level));
+        getUser(p).setExp(getExpAtLevel(level));
     }
     
     public void setLevelKey(String levelKey)
@@ -418,7 +423,7 @@ public class LevelSystem
     
     public void setUsedPoints(int amount, String p)
     {
-        getPlayer(p).setUsedPoints(amount);
+        getUser(p).setUsedPoints(amount);
     }
     
     public String getSystemKey()

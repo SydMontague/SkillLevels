@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import de.craftlancer.skilllevels.LevelLanguage;
 import de.craftlancer.skilllevels.SkillLevels;
@@ -21,13 +22,13 @@ public class LevelHelpCommand extends LevelSubCommand
     @Override
     protected void execute(CommandSender sender, Command cmd, String label, String[] args)
     {
-        if (!sender.hasPermission(getPermission()))
+        if (!sender.hasPermission(getPermission()) && sender instanceof Player)
             sender.sendMessage(LevelLanguage.COMMAND_PERMISSION);
         else if (args.length == 1 || args[1].equalsIgnoreCase("help"))
         {
             sender.sendMessage(LevelLanguage.HELP_COMMAND_HELP);
             
-            if (sender.hasPermission("levels.admin"))
+            if (!(sender instanceof Player) || sender.hasPermission("levels.admin"))
                 sender.sendMessage(LevelLanguage.HELP_COMMAND_HELP_ADMIN);
         }
         else if (args[1].equalsIgnoreCase("stats"))
