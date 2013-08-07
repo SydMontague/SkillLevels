@@ -1,14 +1,16 @@
 package de.craftlancer.skilllevels;
 
-public class LevelPlayer
+public class LevelUser
 {
     private int exp;
     private int usedpoints;
+    private String name;
     
-    public LevelPlayer(int exp, int usedpoints)
+    public LevelUser(int exp, int usedpoints, String name)
     {
         this.exp = exp;
         this.usedpoints = usedpoints;
+        this.name = name;
     }
     
     public int getExp()
@@ -49,5 +51,10 @@ public class LevelPlayer
     public void revokeUsedPoints(Integer i)
     {
         usedpoints -= i;
+    }
+    
+    public String getName()
+    {
+        return name;
     }
 }

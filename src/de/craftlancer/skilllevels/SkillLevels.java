@@ -2,7 +2,9 @@ package de.craftlancer.skilllevels;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -21,8 +23,7 @@ import de.craftlancer.skilllevels.handlers.SkillLevelHandler;
 import de.craftlancer.skilllevels.handlers.SkillPointHandler;
 
 // TODO add comments
-// TODO add API
-// TODO make the config more case insensitive
+// TODO test
 public class SkillLevels extends JavaPlugin implements Listener
 {
     private FileConfiguration config;
@@ -34,7 +35,7 @@ public class SkillLevels extends JavaPlugin implements Listener
     public void onEnable()
     {
         loadConfig();
-        loadPlayers();
+        loadUsers();
         
         getServer().getPluginManager().registerEvents(this, this);
         getServer().getPluginManager().registerEvents(new LevelListener(this), this);
@@ -44,9 +45,9 @@ public class SkillLevels extends JavaPlugin implements Listener
         if (config.getBoolean("general.useCurrencyHandler", false) && getServer().getPluginManager().getPlugin("CurrencyHandler") != null)
             for (LevelSystem ls : levelMap.values())
             {
-                CurrencyHandler.registerCurrency(ls.getLevelKey(), new SkillLevelHandler(ls));
-                CurrencyHandler.registerCurrency(ls.getLevelKey(), new SkillPointHandler(ls));
-                CurrencyHandler.registerCurrency(ls.getLevelKey(), new SkillExpHandler(ls));
+                CurrencyHandler.registerCurrency(ls.getLevelKey() + "_level", new SkillLevelHandler(ls));
+                CurrencyHandler.registerCurrency(ls.getLevelKey() + "_points", new SkillPointHandler(ls));
+                CurrencyHandler.registerCurrency(ls.getLevelKey() + "_exp", new SkillExpHandler(ls));
             }
     }
     
@@ -78,6 +79,22 @@ public class SkillLevels extends JavaPlugin implements Listener
     public Map<String, LevelSystem> getLevelSystems()
     {
         return levelMap;
+    }
+    
+    public List<LevelSystem> getUsersSystems(String user)
+    {
+        List<LevelSystem> tmp = new ArrayList<LevelSystem>();
+        
+        for (LevelSystem ls : levelMap.values())
+            if (ls.hasUser(user))
+                tmp.add(ls);
+        
+        return tmp;
+    }
+    
+    public LevelSystem getLevelSystem(String name)
+    {
+        return levelMap.get(name);
     }
     
     @EventHandler
@@ -116,24 +133,24 @@ public class SkillLevels extends JavaPlugin implements Listener
             {
                 Map<String, Integer> xpMap = new HashMap<String, Integer>();
                 for (String value : config.getConfigurationSection("systems." + key + ".actions." + action).getKeys(false))
-                    xpMap.put(value, config.getInt("systems." + key + ".actions." + action + "." + value));
+                    xpMap.put(value.toUpperCase(), config.getInt("systems." + key + ".actions." + action + "." + value));
                 
                 helpMap.put(LevelAction.valueOf(action), xpMap);
             }
-                        
+            
             levelMap.put(key, new LevelSystem(key, name, ppl, maxlevel, formula, helpMap, levelName, levelKey, pointName, pointKey, expName, expKey));
         }
     }
     
-    private void loadPlayers()
+    private void loadUsers()
     {
-        pfile = new File(getDataFolder(), "players.yml");
+        pfile = new File(getDataFolder(), "users.yml");
         pconfig = YamlConfiguration.loadConfiguration(pfile);
         
         for (String key : pconfig.getKeys(false))
             for (String system : pconfig.getConfigurationSection(key).getKeys(false))
                 if (levelMap.containsKey(system))
-                    levelMap.get(system).addLevelPlayer(key, pconfig.getInt(key + "." + system + ".exp"), pconfig.getInt(key + "." + system + ".usedskillp"));
+                    levelMap.get(system).addUser(key, pconfig.getInt(key + "." + system + ".exp"), pconfig.getInt(key + "." + system + ".usedskillp"));
     }
     
     private void savePlayer(String p)

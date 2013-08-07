@@ -6,6 +6,9 @@ import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import de.craftlancer.skilllevels.event.SkillExpChangeEvent;
+import de.craftlancer.skilllevels.event.SkillLevelUpEvent;
+
 public class LevelSystem
 {
     private String expKey;
@@ -17,7 +20,7 @@ public class LevelSystem
     
     private String levelName;
     private int maxlevel;
-    private Map<String, LevelPlayer> userMap = new HashMap<String, LevelPlayer>();
+    private Map<String, LevelUser> userMap = new HashMap<String, LevelUser>();
     
     private String pointKey;
     private String pointName;
@@ -71,9 +74,11 @@ public class LevelSystem
         getUser(p).addExp(getExpAtLevel(init + level) - getExpAtLevel(init));
     }
     
-    public void addLevelPlayer(String name, int exp, int usedpoints)
+    public void addUser(String name, int exp, int usedpoints)
     {
-        userMap.put(name, new LevelPlayer(exp, usedpoints));
+        name = name.toLowerCase();
+        if (!userMap.containsKey(name))
+            userMap.put(name, new LevelUser(exp, usedpoints, name));
     }
     
     public void addUsedPoints(int amount, Player p)
@@ -224,17 +229,17 @@ public class LevelSystem
         return String.valueOf(result);
     }
     
-    public LevelPlayer getUser(Player p)
+    public LevelUser getUser(Player p)
     {
         return getUser(p.getName());
     }
     
-    public LevelPlayer getUser(String name)
+    public LevelUser getUser(String name)
     {
         return userMap.get(name.toLowerCase());
     }
     
-    public Map<String, LevelPlayer> getPlayers()
+    public Map<String, LevelUser> getPlayers()
     {
         return userMap;
     }
@@ -287,19 +292,26 @@ public class LevelSystem
             return;
         
         if (!hasUser(user))
-            userMap.put(user.toLowerCase(), new LevelPlayer(0, 0));
+            userMap.put(user.toLowerCase(), new LevelUser(0, 0, user.toLowerCase()));
         
         int initlevel = getLevel(user);
         addExp(xpperaction.get(action).get(name) * amount, user);
         int newlevel = getLevel(user);
+        boolean isPlayer = Bukkit.getPlayerExact(user) != null;
         
-        if (newlevel > initlevel && Bukkit.getPlayerExact(user) != null)
+        if (newlevel > initlevel)
         {
-            String msg = LevelLanguage.LEVEL_UP;
-            msg = msg.replace("%level%", String.valueOf(newlevel));
-            msg = msg.replace("%systemname%", getSystemName());
-            Bukkit.getPlayerExact(user).sendMessage(msg);
+            if (isPlayer)
+            {
+                String msg = LevelLanguage.LEVEL_UP;
+                msg = msg.replace("%level%", String.valueOf(newlevel));
+                msg = msg.replace("%systemname%", getSystemName());
+                Bukkit.getPlayerExact(user).sendMessage(msg);
+            }
+            Bukkit.getPluginManager().callEvent(new SkillLevelUpEvent(initlevel, newlevel, user, isPlayer, this));
         }
+        
+        Bukkit.getPluginManager().callEvent(new SkillExpChangeEvent(user, isPlayer, amount, action, this));
     }
     
     public boolean hasUser(Player p)
