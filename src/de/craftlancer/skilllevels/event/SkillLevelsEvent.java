@@ -1,13 +1,11 @@
 package de.craftlancer.skilllevels.event;
 
 import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
 
 import de.craftlancer.skilllevels.LevelSystem;
 
-public class SkillLevelsEvent extends Event
+public abstract class SkillLevelsEvent extends Event
 {
-    private static final HandlerList handlers = new HandlerList();
     private String user;
     private boolean isPlayer;
     private LevelSystem system;
@@ -33,11 +31,4 @@ public class SkillLevelsEvent extends Event
     {
         return system;
     }
-    
-    @Override
-    public HandlerList getHandlers()
-    {
-        return handlers;
-    }
-    
 }

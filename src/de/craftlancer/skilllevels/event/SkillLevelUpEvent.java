@@ -1,9 +1,12 @@
 package de.craftlancer.skilllevels.event;
 
+import org.bukkit.event.HandlerList;
+
 import de.craftlancer.skilllevels.LevelSystem;
 
 public class SkillLevelUpEvent extends SkillLevelsEvent
 {
+    private static final HandlerList handlers = new HandlerList();
     private int oldlevel;
     private int newlevel;
     
@@ -22,5 +25,16 @@ public class SkillLevelUpEvent extends SkillLevelsEvent
     public int getNewlevel()
     {
         return newlevel;
+    }
+    
+    @Override
+    public HandlerList getHandlers()
+    {
+        return handlers;
+    }
+    
+    public static HandlerList getHandlerList()
+    {
+        return handlers;
     }
 }

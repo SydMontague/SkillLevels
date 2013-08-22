@@ -21,11 +21,13 @@ import de.craftlancer.skilllevels.commands.LevelCommands;
 import de.craftlancer.skilllevels.handlers.SkillExpHandler;
 import de.craftlancer.skilllevels.handlers.SkillLevelHandler;
 import de.craftlancer.skilllevels.handlers.SkillPointHandler;
+import de.craftlancer.skilllevels.metrics.Metrics;
 
 // TODO add comments
-// TODO test
+// TOTEST
 public class SkillLevels extends JavaPlugin implements Listener
 {
+    private static SkillLevels instance;
     private FileConfiguration config;
     private FileConfiguration pconfig;
     private File pfile;
@@ -34,6 +36,7 @@ public class SkillLevels extends JavaPlugin implements Listener
     @Override
     public void onEnable()
     {
+        instance = this;
         loadConfig();
         loadUsers();
         
@@ -45,10 +48,19 @@ public class SkillLevels extends JavaPlugin implements Listener
         if (config.getBoolean("general.useCurrencyHandler", false) && getServer().getPluginManager().getPlugin("CurrencyHandler") != null)
             for (LevelSystem ls : levelMap.values())
             {
-                CurrencyHandler.registerCurrency(ls.getLevelKey() + "_level", new SkillLevelHandler(ls));
-                CurrencyHandler.registerCurrency(ls.getLevelKey() + "_points", new SkillPointHandler(ls));
-                CurrencyHandler.registerCurrency(ls.getLevelKey() + "_exp", new SkillExpHandler(ls));
+                CurrencyHandler.registerCurrency(ls.getLevelKey(), new SkillLevelHandler(ls));
+                CurrencyHandler.registerCurrency(ls.getPointKey(), new SkillPointHandler(ls));
+                CurrencyHandler.registerCurrency(ls.getExpKey(), new SkillExpHandler(ls));
             }
+        
+        try
+        {
+            Metrics metrics = new Metrics(this);
+            metrics.start();
+        }
+        catch (IOException e)
+        {
+        }
     }
     
     @Override
@@ -56,6 +68,24 @@ public class SkillLevels extends JavaPlugin implements Listener
     {
         for (Player p : getServer().getOnlinePlayers())
             savePlayer(p.getName());
+    }
+    
+    public static SkillLevels getInstance()
+    {
+        return instance;
+    }
+    
+    public int getUserLevel(String system, String user)
+    {
+        if (!hasLevelSystem(system) || !getLevelSystem(system).hasUser(user))
+            return 0;
+        
+        return getLevelSystem(system).getLevel(user);
+    }
+    
+    public boolean hasLevelSystem(String system)
+    {
+        return getLevelSystems().containsKey(system);
     }
     
     public void handleAction(LevelAction action, String name, Player player)
@@ -116,7 +146,7 @@ public class SkillLevels extends JavaPlugin implements Listener
         {
             String name = config.getString("systems." + key + ".name");
             String formula = config.getString("systems." + key + ".formula");
-            int ppl = config.getInt("systsms." + key + ".pointsperlevel");
+            int ppl = config.getInt("systems." + key + ".pointsperlevel");
             int maxlevel = config.getInt("systems." + key + ".maxlevel");
             
             String levelKey = config.getString("systems." + key + ".levelKey");
@@ -158,6 +188,8 @@ public class SkillLevels extends JavaPlugin implements Listener
         for (Entry<String, LevelSystem> system : levelMap.entrySet())
         {
             LevelSystem ls = system.getValue();
+            if(!ls.hasUser(p))
+                continue;
             pconfig.set(p + "." + system.getKey() + ".exp", ls.getExp(p));
             pconfig.set(p + "." + system.getKey() + ".usedskillp", ls.getUsedPoints(p));
         }

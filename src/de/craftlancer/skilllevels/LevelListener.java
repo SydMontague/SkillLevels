@@ -30,14 +30,14 @@ public class LevelListener implements Listener
     public void onMobDamage(EntityDamageByEntityEvent e)
     {
         if (e.getDamager() instanceof Player)
-            plugin.handleAction(LevelAction.MOBDAMAGE, e.getEntityType().getName(), (int) e.getDamage(), ((Player) e.getDamager()));
+            plugin.handleAction(LevelAction.MOBDAMAGE, e.getEntityType().name(), (int) e.getDamage(), ((Player) e.getDamager()));
     }
     
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onMobKill(EntityDeathEvent e)
     {
         if (e.getEntity().getKiller() != null)
-            plugin.handleAction(LevelAction.MOBKILL, e.getEntityType().getName(), 1, e.getEntity().getKiller());
+            plugin.handleAction(LevelAction.MOBKILL, e.getEntityType().name(), 1, e.getEntity().getKiller());
     }
     
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -56,7 +56,7 @@ public class LevelListener implements Listener
     public void onEntityTame(EntityTameEvent e)
     {
         if (e.getOwner() instanceof Player)
-            plugin.handleAction(LevelAction.MOBTAME, e.getEntityType().getName(), (Player) e.getOwner());
+            plugin.handleAction(LevelAction.MOBTAME, e.getEntityType().name(), (Player) e.getOwner());
     }
     
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -94,7 +94,7 @@ public class LevelListener implements Listener
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onExpChange(PlayerLevelChangeEvent e)
     {
-        plugin.handleAction(LevelAction.EVENT, "EXPCHANGE", e.getNewLevel() - e.getOldLevel(), e.getPlayer());
+        plugin.handleAction(LevelAction.EVENT, "LEVELCHANGE", e.getNewLevel() - e.getOldLevel(), e.getPlayer());
     }
     
 }

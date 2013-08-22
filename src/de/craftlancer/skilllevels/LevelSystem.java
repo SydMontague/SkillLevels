@@ -154,7 +154,7 @@ public class LevelSystem
     
     public int getLevel(String p)
     {
-        return getLevel(getUser(p).getExp());
+        return hasUser(p) ? getLevel(getUser(p).getExp()) : 0;
     }
     
     public String getLevelKey()
