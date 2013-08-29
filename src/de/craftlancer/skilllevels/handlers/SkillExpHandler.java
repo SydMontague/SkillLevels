@@ -7,7 +7,7 @@ import de.craftlancer.skilllevels.LevelSystem;
 
 public class SkillExpHandler implements Handler<Integer>
 {
-    LevelSystem system;
+    private LevelSystem system;
     
     public SkillExpHandler(LevelSystem system)
     {

@@ -31,7 +31,7 @@ public class LevelSetCommand extends LevelSubCommand
             sender.sendMessage(LevelLanguage.COMMAND_PLAYER_NOT_EXIST);
         else if (!plugin.getLevelSystems().containsKey(args[2]))
             sender.sendMessage(LevelLanguage.COMMAND_SYSTEM_NOT_EXIST);
-        else if (Utils.getMatches(args[3], new String[] { "xp", "points", "level" }) == null)
+        else if (!Utils.arrayContains(new String[] { "xp", "points", "level" }, args[3]))
             sender.sendMessage(LevelLanguage.COMMAND_ADDSETRESET_ARGERROR);
         else if (!args[4].matches("-?[0-9]+"))
             sender.sendMessage(LevelLanguage.COMMAND_NOT_A_NUMBER);
@@ -51,7 +51,15 @@ public class LevelSetCommand extends LevelSubCommand
     @Override
     protected List<String> onTabComplete(String[] args)
     {
-        return null;
+        switch (args.length)
+        {
+            case 3:
+                return Utils.getMatches(args[2], plugin.getLevelSystems().keySet());
+            case 4:
+                return Utils.getMatches(args[3], new String[] { "xp", "points", "level" });
+            default:
+                return null;
+        }
     }
     
 }

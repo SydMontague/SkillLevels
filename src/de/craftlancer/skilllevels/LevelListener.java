@@ -1,5 +1,6 @@
 package de.craftlancer.skilllevels;
 
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -29,7 +30,7 @@ public class LevelListener implements Listener
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onMobDamage(EntityDamageByEntityEvent e)
     {
-        if (e.getDamager() instanceof Player)
+        if (e.getEntityType().equals(EntityType.PLAYER))
             plugin.handleAction(LevelAction.MOBDAMAGE, e.getEntityType().name(), (int) e.getDamage(), ((Player) e.getDamager()));
     }
     
@@ -68,7 +69,7 @@ public class LevelListener implements Listener
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onItemCraft(CraftItemEvent e)
     {
-        if (e.getWhoClicked() instanceof Player)
+        if (e.getWhoClicked().getType().equals(EntityType.PLAYER))
             plugin.handleAction(LevelAction.CRAFT, e.getRecipe().getResult().getType().name(), e.getRecipe().getResult().getAmount(), (Player) e.getWhoClicked());
     }
     
@@ -96,5 +97,4 @@ public class LevelListener implements Listener
     {
         plugin.handleAction(LevelAction.EVENT, "LEVELCHANGE", e.getNewLevel() - e.getOldLevel(), e.getPlayer());
     }
-    
 }

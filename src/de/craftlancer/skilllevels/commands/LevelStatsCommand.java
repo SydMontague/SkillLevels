@@ -2,6 +2,7 @@ package de.craftlancer.skilllevels.commands;
 
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -36,7 +37,7 @@ public class LevelStatsCommand extends LevelSubCommand
                 if (!ls.hasUser(lsUser))
                     continue;
                 
-                sender.sendMessage(ls.getSystemName() + " - " + ls.getLevelName() + " " + ls.getLevel(lsUser) + " | " + ls.getExp(lsUser) + " " + ls.getExpName() + " | " + ls.getPoints(lsUser) + " " + ls.getPointName());
+                sender.sendMessage(ChatColor.AQUA + ls.getSystemName() + " - " + ls.getLevelName() + " " + ls.getLevel(lsUser) + " | " + ls.getExp(lsUser) + " " + ls.getExpName() + " | " + ls.getPoints(lsUser) + " " + ls.getPointName());
             }
         }
     }

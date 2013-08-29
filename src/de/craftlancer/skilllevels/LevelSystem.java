@@ -77,7 +77,7 @@ public class LevelSystem
     public void addUser(String name, int exp, int usedpoints)
     {
         name = name.toLowerCase();
-        if (!userMap.containsKey(name))
+        if (!hasUser(name))
             userMap.put(name, new LevelUser(exp, usedpoints, name));
     }
     
@@ -108,7 +108,7 @@ public class LevelSystem
     
     public int getExp(String p)
     {
-        return hasUser(p) ? getUser(p).getExp() : 0;
+        return getUser(p).getExp();
     }
     
     public int getExpAtLevel(int i)
@@ -154,7 +154,7 @@ public class LevelSystem
     
     public int getLevel(String p)
     {
-        return hasUser(p) ? getLevel(getUser(p).getExp()) : 0;
+        return getLevel(getUser(p).getExp());
     }
     
     public String getLevelKey()
@@ -236,6 +236,9 @@ public class LevelSystem
     
     public LevelUser getUser(String name)
     {
+        if (!hasUser(name))
+            addUser(name, 0, 0);
+        
         return userMap.get(name.toLowerCase());
     }
     
@@ -292,7 +295,7 @@ public class LevelSystem
             return;
         
         if (!hasUser(user))
-            userMap.put(user.toLowerCase(), new LevelUser(0, 0, user.toLowerCase()));
+            addUser(user, 0, 0);
         
         int initlevel = getLevel(user);
         addExp(xpperaction.get(action).get(name) * amount, user);

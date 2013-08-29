@@ -2,8 +2,8 @@ package de.craftlancer.skilllevels;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -12,6 +12,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -22,12 +23,10 @@ import de.craftlancer.skilllevels.handlers.SkillExpHandler;
 import de.craftlancer.skilllevels.handlers.SkillLevelHandler;
 import de.craftlancer.skilllevels.handlers.SkillPointHandler;
 import de.craftlancer.skilllevels.metrics.Metrics;
+import de.craftlancer.skilllevels.metrics.Metrics.Graph;
 
-// TODO add comments
-// TOTEST
 public class SkillLevels extends JavaPlugin implements Listener
 {
-    private static SkillLevels instance;
     private FileConfiguration config;
     private FileConfiguration pconfig;
     private File pfile;
@@ -36,7 +35,6 @@ public class SkillLevels extends JavaPlugin implements Listener
     @Override
     public void onEnable()
     {
-        instance = this;
         loadConfig();
         loadUsers();
         
@@ -57,6 +55,16 @@ public class SkillLevels extends JavaPlugin implements Listener
         {
             Metrics metrics = new Metrics(this);
             metrics.start();
+            
+            Graph sysCount = metrics.createGraph("Number of Level Systems");
+            sysCount.addPlotter(new Metrics.Plotter(String.valueOf(levelMap.size()))
+            {
+                @Override
+                public int getValue()
+                {
+                    return 1;
+                }
+            });
         }
         catch (IOException e)
         {
@@ -68,11 +76,6 @@ public class SkillLevels extends JavaPlugin implements Listener
     {
         for (Player p : getServer().getOnlinePlayers())
             savePlayer(p.getName());
-    }
-    
-    public static SkillLevels getInstance()
-    {
-        return instance;
     }
     
     public int getUserLevel(String system, String user)
@@ -113,7 +116,7 @@ public class SkillLevels extends JavaPlugin implements Listener
     
     public List<LevelSystem> getUsersSystems(String user)
     {
-        List<LevelSystem> tmp = new ArrayList<LevelSystem>();
+        List<LevelSystem> tmp = new LinkedList<LevelSystem>();
         
         for (LevelSystem ls : levelMap.values())
             if (ls.hasUser(user))
@@ -127,7 +130,7 @@ public class SkillLevels extends JavaPlugin implements Listener
         return levelMap.get(name);
     }
     
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerQuitEvent e)
     {
         savePlayer(e.getPlayer().getName());
@@ -135,7 +138,7 @@ public class SkillLevels extends JavaPlugin implements Listener
     
     public void loadConfig()
     {
-        if (!new File(getDataFolder().getPath() + File.separatorChar + "config.yml").exists())
+        if (!new File(getDataFolder().getPath(), "config.yml").exists())
             saveDefaultConfig();
         
         reloadConfig();
@@ -188,7 +191,7 @@ public class SkillLevels extends JavaPlugin implements Listener
         for (Entry<String, LevelSystem> system : levelMap.entrySet())
         {
             LevelSystem ls = system.getValue();
-            if(!ls.hasUser(p))
+            if (!ls.hasUser(p))
                 continue;
             pconfig.set(p + "." + system.getKey() + ".exp", ls.getExp(p));
             pconfig.set(p + "." + system.getKey() + ".usedskillp", ls.getUsedPoints(p));

@@ -10,10 +10,10 @@ public class SkillLevelUpEvent extends SkillLevelsEvent
     private int oldlevel;
     private int newlevel;
     
-    public SkillLevelUpEvent(int initlevel, int newlevel, String user, boolean isPlayer, LevelSystem levelSystem)
+    public SkillLevelUpEvent(int oldlevel, int newlevel, String user, boolean isPlayer, LevelSystem levelSystem)
     {
         super(user, isPlayer, levelSystem);
-        this.oldlevel = initlevel;
+        this.oldlevel = oldlevel;
         this.newlevel = newlevel;
     }
     

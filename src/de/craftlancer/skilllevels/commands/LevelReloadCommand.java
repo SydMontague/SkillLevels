@@ -11,7 +11,6 @@ import de.craftlancer.skilllevels.SkillLevels;
 
 public class LevelReloadCommand extends LevelSubCommand
 {
-    
     public LevelReloadCommand(String permission, SkillLevels plugin)
     {
         super(permission, plugin);
@@ -34,5 +33,4 @@ public class LevelReloadCommand extends LevelSubCommand
     {
         return null;
     }
-    
 }

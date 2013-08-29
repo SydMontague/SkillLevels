@@ -7,7 +7,7 @@ import de.craftlancer.skilllevels.LevelSystem;
 
 public class SkillPointHandler implements Handler<Integer>
 {
-    LevelSystem system;
+    private LevelSystem system;
     
     public SkillPointHandler(LevelSystem system)
     {
@@ -35,7 +35,7 @@ public class SkillPointHandler implements Handler<Integer>
     @Override
     public void setCurrency(Player arg0, Integer arg1)
     {
-        throw new UnsupportedOperationException("SkillPointHandler does not support setCurrency()! Skipping the handler.");
+        throw new UnsupportedOperationException("SkillPointHandler does not support setCurrency()!");
     }
     
     @Override
