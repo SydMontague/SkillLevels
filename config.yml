@@ -75,5 +75,3 @@ string:
     RESET_NOTIFY: "§bYour levels were reseted."
     RELOAD_SUCCESS: "§bReload successful."
     LEVEL_UP: "§bLevel Up! You are now level %level% at %systemname%."
-
-                    

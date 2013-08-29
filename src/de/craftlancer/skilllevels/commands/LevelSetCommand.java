@@ -25,7 +25,7 @@ public class LevelSetCommand extends LevelSubCommand
     {
         if (!sender.hasPermission(getPermission()) && sender instanceof Player)
             sender.sendMessage(LevelLanguage.COMMAND_PERMISSION);
-        else if (!(sender instanceof Player) && args.length < 5)
+        else if (args.length < 5)
             sender.sendMessage(LevelLanguage.COMMAND_ARGUMENTS);
         else if (Bukkit.getPlayerExact(args[1]) == null)
             sender.sendMessage(LevelLanguage.COMMAND_PLAYER_NOT_EXIST);
