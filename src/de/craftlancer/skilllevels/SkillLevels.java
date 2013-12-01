@@ -31,10 +31,12 @@ public class SkillLevels extends JavaPlugin implements Listener
     private FileConfiguration pconfig;
     private File pfile;
     private Map<String, LevelSystem> levelMap = new HashMap<String, LevelSystem>();
+    private static SkillLevels instance;
     
     @Override
     public void onEnable()
     {
+        instance = this;
         loadConfig();
         loadUsers();
         
@@ -76,6 +78,11 @@ public class SkillLevels extends JavaPlugin implements Listener
     {
         for (Player p : getServer().getOnlinePlayers())
             savePlayer(p.getName());
+    }
+    
+    public static SkillLevels getInstance()
+    {
+        return instance;
     }
     
     public int getUserLevel(String system, String user)
@@ -175,7 +182,7 @@ public class SkillLevels extends JavaPlugin implements Listener
         }
     }
     
-    private void loadUsers()
+    public void loadUsers()
     {
         pfile = new File(getDataFolder(), "users.yml");
         pconfig = YamlConfiguration.loadConfiguration(pfile);
@@ -186,7 +193,7 @@ public class SkillLevels extends JavaPlugin implements Listener
                     levelMap.get(system).addUser(key, pconfig.getInt(key + "." + system + ".exp"), pconfig.getInt(key + "." + system + ".usedskillp"));
     }
     
-    private void savePlayer(String p)
+    public void savePlayer(String p)
     {
         for (Entry<String, LevelSystem> system : levelMap.entrySet())
         {

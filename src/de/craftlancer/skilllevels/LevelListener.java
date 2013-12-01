@@ -7,6 +7,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTameEvent;
@@ -17,6 +18,7 @@ import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerFishEvent.State;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerLevelChangeEvent;
+import org.bukkit.metadata.FixedMetadataValue;
 
 public class LevelListener implements Listener
 {
@@ -28,15 +30,37 @@ public class LevelListener implements Listener
     }
     
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onSpawnerSpawn(CreatureSpawnEvent e)
+    {
+        if (!plugin.getConfig().getBoolean("general.preventSpawnerLeveling"))
+            return;
+        
+        switch (e.getSpawnReason())
+        {
+            case SPAWNER:
+                e.getEntity().setMetadata("SkillLevels.ignore", new FixedMetadataValue(plugin, null));
+                break;
+            default:
+                return;
+        }
+    }
+    
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onMobDamage(EntityDamageByEntityEvent e)
     {
-        if (e.getEntityType().equals(EntityType.PLAYER))
+        if (e.getEntity().hasMetadata("SkillLevels.ignore"))
+            return;
+        
+        if (e.getDamager().getType().equals(EntityType.PLAYER))
             plugin.handleAction(LevelAction.MOBDAMAGE, e.getEntityType().name(), (int) e.getDamage(), ((Player) e.getDamager()));
     }
     
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onMobKill(EntityDeathEvent e)
     {
+        if (e.getEntity().hasMetadata("SkillLevels.ignore"))
+            return;
+        
         if (e.getEntity().getKiller() != null)
             plugin.handleAction(LevelAction.MOBKILL, e.getEntityType().name(), 1, e.getEntity().getKiller());
     }

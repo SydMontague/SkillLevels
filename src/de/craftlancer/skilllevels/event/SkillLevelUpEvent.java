@@ -17,11 +17,23 @@ public class SkillLevelUpEvent extends SkillLevelsEvent
         this.newlevel = newlevel;
     }
     
+    public int getOldLevel()
+    {
+        return oldlevel;
+    }
+    
+    @Deprecated
     public int getOldlevel()
     {
         return oldlevel;
     }
     
+    public int getNewLevel()
+    {
+        return newlevel;
+    }
+    
+    @Deprecated
     public int getNewlevel()
     {
         return newlevel;

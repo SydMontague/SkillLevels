@@ -37,7 +37,7 @@ public class LevelStatsCommand extends LevelSubCommand
                 if (!ls.hasUser(lsUser))
                     continue;
                 
-                sender.sendMessage(ChatColor.AQUA + ls.getSystemName() + " - " + ls.getLevelName() + " " + ls.getLevel(lsUser) + " | " + ls.getExp(lsUser) + " " + ls.getExpName() + " | " + ls.getPoints(lsUser) + " " + ls.getPointName());
+                sender.sendMessage(ChatColor.AQUA + ls.getSystemName() + " - " + ls.getLevelName() + " " + ls.getLevel(lsUser) + " | " + ls.getExp(lsUser) + "/" + ls.getExpAtLevel(ls.getLevel(lsUser) + 1) + " " + ls.getExpName() + " | " + ls.getPoints(lsUser) + " " + ls.getPointName());
             }
         }
     }
