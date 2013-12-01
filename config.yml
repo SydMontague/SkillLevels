@@ -1,5 +1,6 @@
 general:
     useCurrencyHandler: false
+    preventSpawnerLeveling: true
 systems:
     example:
         name: Examplesystem
