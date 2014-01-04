@@ -1,6 +1,6 @@
 name: SkillLevels
 main: de.craftlancer.skilllevels.SkillLevels
-version: 0.1.1
+version: ${project.version}
 author: SydMontague
 description: Create custom level systems!
 softdepend: [CurrencyHandler]
