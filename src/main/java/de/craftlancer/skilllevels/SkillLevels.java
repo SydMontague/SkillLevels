@@ -16,14 +16,14 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mcstats.Metrics;
+import org.mcstats.Metrics.Graph;
 
 import de.craftlancer.currencyhandler.CurrencyHandler;
 import de.craftlancer.skilllevels.commands.LevelCommands;
 import de.craftlancer.skilllevels.handlers.SkillExpHandler;
 import de.craftlancer.skilllevels.handlers.SkillLevelHandler;
 import de.craftlancer.skilllevels.handlers.SkillPointHandler;
-import de.craftlancer.skilllevels.metrics.Metrics;
-import de.craftlancer.skilllevels.metrics.Metrics.Graph;
 
 public class SkillLevels extends JavaPlugin implements Listener
 {
