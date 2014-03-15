@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import de.craftlancer.currencyhandler.Handler;
 import de.craftlancer.skilllevels.LevelSystem;
 
-public class SkillLevelHandler implements Handler<Integer>
+public class SkillLevelHandler implements Handler<Object, Integer>
 {
     private LevelSystem system;
     
@@ -15,29 +15,29 @@ public class SkillLevelHandler implements Handler<Integer>
     }
     
     @Override
-    public boolean hasCurrency(Player p, Integer amount)
+    public boolean hasCurrency(Object p, Integer amount)
     {
-        return system.getLevel(p) >= amount;
+        return system.getLevel(getUserName(p)) >= amount;
     }
     
     @Override
-    public void withdrawCurrency(Player p, Integer amount)
+    public void withdrawCurrency(Object p, Integer amount)
     {
-        int level = system.getLevel(p);
-        system.revokeExp(system.getExpAtLevel(level) - system.getExpAtLevel(level - amount), p);
+        int level = system.getLevel(getUserName(p));
+        system.revokeExp(system.getExpAtLevel(level) - system.getExpAtLevel(level - amount), getUserName(p));
     }
     
     @Override
-    public void giveCurrency(Player p, Integer amount)
+    public void giveCurrency(Object p, Integer amount)
     {
-        int level = system.getLevel(p);
-        system.addExp(system.getExpAtLevel(level + amount) - system.getExpAtLevel(level), p);
+        int level = system.getLevel(getUserName(p));
+        system.addExp(system.getExpAtLevel(level + amount) - system.getExpAtLevel(level), getUserName(p));
     }
     
     @Override
-    public void setCurrency(Player p, Integer amount)
+    public void setCurrency(Object p, Integer amount)
     {
-        system.setExp(system.getExpAtLevel(amount), p);
+        system.setExp(system.getExpAtLevel(amount), getUserName(p));
     }
     
     @Override
@@ -56,5 +56,22 @@ public class SkillLevelHandler implements Handler<Integer>
     public boolean checkInputObject(Object obj)
     {
         return obj instanceof Integer;
+    }
+    
+    @Override
+    public boolean checkInputHolder(Object obj)
+    {
+        if (obj instanceof Player)
+            return system.hasUser((Player) obj);
+        
+        return system.hasUser(obj.toString());
+    }
+    
+    private String getUserName(Object obj)
+    {
+        if (obj instanceof Player)
+            return ((Player) obj).getName();
+        
+        return obj.toString();
     }
 }
