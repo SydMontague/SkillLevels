@@ -65,7 +65,7 @@ public class SkillPointHandler implements Handler<Object, Integer>
         return system.hasUser(obj.toString());
     }
     
-    private String getUserName(Object obj)
+    private static String getUserName(Object obj)
     {
         if (obj instanceof Player)
             return ((Player) obj).getName();
