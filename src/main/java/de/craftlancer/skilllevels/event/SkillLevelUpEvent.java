@@ -3,6 +3,7 @@ package de.craftlancer.skilllevels.event;
 import org.bukkit.event.HandlerList;
 
 import de.craftlancer.skilllevels.LevelSystem;
+import de.craftlancer.skilllevels.LevelUser;
 
 public class SkillLevelUpEvent extends SkillLevelsEvent
 {
@@ -10,7 +11,7 @@ public class SkillLevelUpEvent extends SkillLevelsEvent
     private int oldlevel;
     private int newlevel;
     
-    public SkillLevelUpEvent(int oldlevel, int newlevel, String user, boolean isPlayer, LevelSystem levelSystem)
+    public SkillLevelUpEvent(LevelUser user, boolean isPlayer, LevelSystem levelSystem, int oldlevel, int newlevel)
     {
         super(user, isPlayer, levelSystem);
         this.oldlevel = oldlevel;

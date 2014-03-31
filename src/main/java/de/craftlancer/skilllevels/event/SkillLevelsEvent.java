@@ -3,21 +3,23 @@ package de.craftlancer.skilllevels.event;
 import org.bukkit.event.Event;
 
 import de.craftlancer.skilllevels.LevelSystem;
+import de.craftlancer.skilllevels.LevelUser;
 
+//TODO unify constructor of subclasses
 public abstract class SkillLevelsEvent extends Event
 {
-    private String user;
+    private LevelUser user;
     private boolean isPlayer;
     private LevelSystem system;
     
-    public SkillLevelsEvent(String user, boolean isPlayer, LevelSystem system)
+    public SkillLevelsEvent(LevelUser user, boolean isPlayer, LevelSystem system)
     {
         this.user = user;
         this.isPlayer = isPlayer;
         this.system = system;
     }
     
-    public String getUser()
+    public LevelUser getUser()
     {
         return user;
     }

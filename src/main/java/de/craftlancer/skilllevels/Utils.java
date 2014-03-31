@@ -11,7 +11,7 @@ public class Utils
     /**
      * Check if a String array contains a String
      * The check is case sensitive
-     * 
+     *
      * @param array the array
      * @param string the String
      * @return true if the array contains the string, false if not
@@ -28,7 +28,7 @@ public class Utils
     
     /**
      * Get all values of a String Collection which start with a given String
-     * 
+     *
      * @param value the given String
      * @param list the Collection
      * @return a List of all matches
@@ -46,7 +46,7 @@ public class Utils
     
     /**
      * Get all values of a String array which start with a given String
-     * 
+     *
      * @param value the given String
      * @param list the array
      * @return a List of all matches

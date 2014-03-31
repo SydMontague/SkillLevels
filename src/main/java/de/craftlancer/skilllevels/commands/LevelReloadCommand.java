@@ -23,11 +23,7 @@ public class LevelReloadCommand extends LevelSubCommand
             sender.sendMessage(LevelLanguage.COMMAND_PERMISSION);
         else
         {
-            for (Player p : plugin.getServer().getOnlinePlayers())
-                plugin.savePlayer(p.getName());
-            
-            plugin.loadUsers();
-            plugin.loadConfig();
+            plugin.reload();
             sender.sendMessage(LevelLanguage.RELOAD_SUCCESS);
         }
     }

@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 
 import de.craftlancer.skilllevels.SkillLevels;
 
-//TODO add help system (-> and use it for every other plugin, that uses this command system, as well)
+// TODO update to latest CommandSystem version
 public abstract class LevelSubCommand
 {
     String permission = "";

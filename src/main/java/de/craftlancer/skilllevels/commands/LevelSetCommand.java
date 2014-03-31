@@ -1,6 +1,7 @@
 package de.craftlancer.skilllevels.commands;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -8,7 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import de.craftlancer.skilllevels.LevelLanguage;
-import de.craftlancer.skilllevels.LevelSystem;
+import de.craftlancer.skilllevels.LevelUser;
 import de.craftlancer.skilllevels.SkillLevels;
 import de.craftlancer.skilllevels.Utils;
 
@@ -37,14 +38,15 @@ public class LevelSetCommand extends LevelSubCommand
             sender.sendMessage(LevelLanguage.COMMAND_NOT_A_NUMBER);
         else
         {
-            LevelSystem ls = plugin.getLevelSystems().get(args[2]);
+            UUID uuid = Bukkit.getPlayerExact(args[1]).getUniqueId();
+            LevelUser user = plugin.getLevelSystems().get(args[2]).getUser(uuid);
             
             if (args[3].equalsIgnoreCase("xp"))
-                ls.setExp(Integer.parseInt(args[4]), args[1]);
+                user.setExp(Integer.parseInt(args[4]));
             else if (args[3].equalsIgnoreCase("points"))
-                ls.setUsedPoints(Integer.parseInt(args[4]), args[1]);
+                user.setUsedPoints(Integer.parseInt(args[4]));
             else if (args[3].equalsIgnoreCase("level"))
-                ls.setLevel(Integer.parseInt(args[4]), args[1]);
+                user.setLevel(Integer.parseInt(args[4]));
         }
     }
     

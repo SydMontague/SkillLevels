@@ -1,16 +1,20 @@
 package de.craftlancer.skilllevels;
 
+import java.util.UUID;
+
 public class LevelUser
 {
+    private UUID uuid;
+    private LevelSystem system;
     private int exp;
     private int usedpoints;
-    private String name;
     
-    public LevelUser(int exp, int usedpoints, String name)
+    public LevelUser(int exp, int usedpoints, UUID uuid, LevelSystem system)
     {
+        this.system = system;
         this.exp = exp;
         this.usedpoints = usedpoints;
-        this.name = name;
+        this.uuid = uuid;
     }
     
     public int getExp()
@@ -53,8 +57,41 @@ public class LevelUser
         usedpoints -= i;
     }
     
-    public String getName()
+    public UUID getUUID()
     {
-        return name;
+        return uuid;
+    }
+    
+    public int getLevel()
+    {
+        return system.getLevel(getExp());
+    }
+    
+    public void addLevel(int level)
+    {
+        int init = getLevel();
+        addExp(system.getExpAtLevel(init + level) - system.getExpAtLevel(init));
+    }
+    
+    public void revokeLevel(int level)
+    {
+        int init = getLevel();
+        revokeExp(system.getExpAtLevel(init) - system.getExpAtLevel(init - level));
+    }
+    
+    public void setLevel(int level)
+    {
+        setExp(system.getExpAtLevel(level));
+    }
+    
+    public int getPoints()
+    {
+        return getLevel() * system.getPointsPerLevel() - getUsedPoints();
+    }
+    
+    public void save()
+    {
+        PlayerDataHandler.getInstance().set(uuid, system, "exp", getExp());
+        PlayerDataHandler.getInstance().set(uuid, system, "usedskillp", getUsedPoints());
     }
 }

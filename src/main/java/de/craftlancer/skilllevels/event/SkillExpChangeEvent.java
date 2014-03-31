@@ -4,6 +4,7 @@ import org.bukkit.event.HandlerList;
 
 import de.craftlancer.skilllevels.LevelAction;
 import de.craftlancer.skilllevels.LevelSystem;
+import de.craftlancer.skilllevels.LevelUser;
 
 public class SkillExpChangeEvent extends SkillLevelsEvent
 {
@@ -11,7 +12,7 @@ public class SkillExpChangeEvent extends SkillLevelsEvent
     private int amount;
     private LevelAction action;
     
-    public SkillExpChangeEvent(String user, boolean isPlayer, int amount, LevelAction action, LevelSystem levelSystem)
+    public SkillExpChangeEvent(LevelUser user, boolean isPlayer, LevelSystem levelSystem, int amount, LevelAction action)
     {
         super(user, isPlayer, levelSystem);
         this.amount = amount;

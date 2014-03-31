@@ -1,6 +1,7 @@
 package de.craftlancer.skilllevels.commands;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -9,6 +10,7 @@ import org.bukkit.entity.Player;
 
 import de.craftlancer.skilllevels.LevelLanguage;
 import de.craftlancer.skilllevels.LevelSystem;
+import de.craftlancer.skilllevels.LevelUser;
 import de.craftlancer.skilllevels.SkillLevels;
 
 public class LevelResetCommand extends LevelSubCommand
@@ -25,19 +27,26 @@ public class LevelResetCommand extends LevelSubCommand
             sender.sendMessage(LevelLanguage.COMMAND_PERMISSION);
         else if (args.length < 2)
             sender.sendMessage(LevelLanguage.COMMAND_ARGUMENTS);
+        else if (Bukkit.getPlayerExact(args[1]) == null)
+            sender.sendMessage(LevelLanguage.COMMAND_PLAYER_NOT_EXIST);
         else
         {
-            for (LevelSystem s : plugin.getLevelSystems().values())
+            Player player = Bukkit.getPlayerExact(args[1]);
+            UUID uuid = player.getUniqueId();
+            
+            for (LevelSystem system : plugin.getLevelSystems().values())
             {
-                if (!s.hasUser(args[1]))
+                if (!system.hasUser(uuid))
                     continue;
                 
-                s.setExp(0, args[1]);
-                s.setUsedPoints(0, args[1]);
+                LevelUser user = system.getUser(uuid);
+                
+                user.setExp(0);
+                user.setUsedPoints(0);
             }
             
             sender.sendMessage(LevelLanguage.RESET_SUCCESS);
-            Bukkit.getPlayerExact(args[1]).sendMessage(LevelLanguage.RESET_NOTIFY);
+            player.sendMessage(LevelLanguage.RESET_NOTIFY);
         }
     }
     

@@ -1,42 +1,36 @@
 package de.craftlancer.skilllevels.handlers;
 
-import org.bukkit.entity.Player;
-
-import de.craftlancer.currencyhandler.Handler;
 import de.craftlancer.skilllevels.LevelSystem;
-import de.craftlancer.skilllevels.LevelUser;
 
-public class SkillExpHandler implements Handler<Object, Integer>
+public class SkillExpHandler extends SkillHandler
 {
-    private LevelSystem system;
-    
     public SkillExpHandler(LevelSystem system)
     {
-        this.system = system;
+        super(system);
     }
     
     @Override
-    public boolean hasCurrency(Object p, Integer amount)
+    public boolean hasCurrency(Object user, Integer amount)
     {
-        return getUser(p).getExp() >= amount;
+        return getUser(user).getExp() >= amount;
     }
     
     @Override
-    public void withdrawCurrency(Object p, Integer amount)
+    public void withdrawCurrency(Object user, Integer amount)
     {
-        getUser(p).revokeExp(amount);
+        getUser(user).revokeExp(amount);
     }
     
     @Override
-    public void giveCurrency(Object p, Integer amount)
+    public void giveCurrency(Object user, Integer amount)
     {
-        getUser(p).addExp(amount);
+        getUser(user).addExp(amount);
     }
     
     @Override
-    public void setCurrency(Object p, Integer amount)
+    public void setCurrency(Object user, Integer amount)
     {
-        getUser(p).setExp(amount);
+        getUser(user).setExp(amount);
     }
     
     @Override
@@ -48,29 +42,6 @@ public class SkillExpHandler implements Handler<Object, Integer>
     @Override
     public String getCurrencyName()
     {
-        return system.getExpName();
-    }
-    
-    @Override
-    public boolean checkInputObject(Object obj)
-    {
-        return (obj instanceof Integer);
-    }
-    
-    @Override
-    public boolean checkInputHolder(Object obj)
-    {
-        if (obj instanceof Player)
-            return system.hasUser((Player) obj);
-        
-        return system.hasUser(obj.toString());
-    }
-    
-    private LevelUser getUser(Object obj)
-    {
-        if (obj instanceof Player)
-            return system.getUser((Player) obj);
-        
-        return system.getUser(obj.toString());
+        return getLevelSystem().getExpName();
     }
 }

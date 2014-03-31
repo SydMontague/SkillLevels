@@ -6,15 +6,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.UUID;
 
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 import org.mcstats.Metrics.Graph;
@@ -25,11 +21,11 @@ import de.craftlancer.skilllevels.handlers.SkillExpHandler;
 import de.craftlancer.skilllevels.handlers.SkillLevelHandler;
 import de.craftlancer.skilllevels.handlers.SkillPointHandler;
 
+//TODO MySQL Storage option
+//TODO UUID Auto-Update (not needed, as nobody else uses this plugin?)
 public class SkillLevels extends JavaPlugin implements Listener
 {
     private FileConfiguration config;
-    private FileConfiguration pconfig;
-    private File pfile;
     private Map<String, LevelSystem> levelMap = new HashMap<String, LevelSystem>();
     private static SkillLevels instance;
     
@@ -38,7 +34,7 @@ public class SkillLevels extends JavaPlugin implements Listener
     {
         instance = this;
         loadConfig();
-        loadUsers();
+        PlayerDataHandler.getInstance().loadUsers();
         
         getServer().getPluginManager().registerEvents(this, this);
         getServer().getPluginManager().registerEvents(new LevelListener(this), this);
@@ -52,6 +48,8 @@ public class SkillLevels extends JavaPlugin implements Listener
                 CurrencyHandler.registerCurrency(ls.getPointKey(), new SkillPointHandler(ls));
                 CurrencyHandler.registerCurrency(ls.getExpKey(), new SkillExpHandler(ls));
             }
+        
+        new LevelSaveTask().runTaskTimer(this, 12000, 12000);
         
         try
         {
@@ -76,21 +74,12 @@ public class SkillLevels extends JavaPlugin implements Listener
     @Override
     public void onDisable()
     {
-        for (Player p : getServer().getOnlinePlayers())
-            savePlayer(p.getName());
+        save();
     }
     
     public static SkillLevels getInstance()
     {
         return instance;
-    }
-    
-    public int getUserLevel(String system, String user)
-    {
-        if (!hasLevelSystem(system) || !getLevelSystem(system).hasUser(user))
-            return 0;
-        
-        return getLevelSystem(system).getLevel(user);
     }
     
     public boolean hasLevelSystem(String system)
@@ -107,10 +96,10 @@ public class SkillLevels extends JavaPlugin implements Listener
     {
         for (LevelSystem ls : levelMap.values())
             if (player.hasPermission("levels.system." + ls.getSystemKey()))
-                ls.handleAction(action, name, amount, player.getName());
+                ls.handleAction(action, name, amount, player.getUniqueId());
     }
     
-    public void handleAction(LevelAction action, String name, int amount, String user)
+    public void handleAction(LevelAction action, String name, int amount, UUID user)
     {
         for (LevelSystem ls : levelMap.values())
             ls.handleAction(action, name, amount, user);
@@ -121,7 +110,7 @@ public class SkillLevels extends JavaPlugin implements Listener
         return levelMap;
     }
     
-    public List<LevelSystem> getUsersSystems(String user)
+    public List<LevelSystem> getUsersSystems(UUID user)
     {
         List<LevelSystem> tmp = new LinkedList<LevelSystem>();
         
@@ -135,12 +124,6 @@ public class SkillLevels extends JavaPlugin implements Listener
     public LevelSystem getLevelSystem(String name)
     {
         return levelMap.get(name);
-    }
-    
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerQuit(PlayerQuitEvent e)
-    {
-        savePlayer(e.getPlayer().getName());
     }
     
     public void loadConfig()
@@ -182,35 +165,20 @@ public class SkillLevels extends JavaPlugin implements Listener
         }
     }
     
-    public void loadUsers()
+    public void save()
     {
-        pfile = new File(getDataFolder(), "users.yml");
-        pconfig = YamlConfiguration.loadConfiguration(pfile);
+        for (LevelSystem system : getLevelSystems().values())
+            system.save();
         
-        for (String key : pconfig.getKeys(false))
-            for (String system : pconfig.getConfigurationSection(key).getKeys(false))
-                if (levelMap.containsKey(system))
-                    levelMap.get(system).addUser(key, pconfig.getInt(key + "." + system + ".exp"), pconfig.getInt(key + "." + system + ".usedskillp"));
+        PlayerDataHandler.getInstance().save();
     }
     
-    public void savePlayer(String p)
+    public void reload()
     {
-        for (Entry<String, LevelSystem> system : levelMap.entrySet())
-        {
-            LevelSystem ls = system.getValue();
-            if (!ls.hasUser(p))
-                continue;
-            pconfig.set(p + "." + system.getKey() + ".exp", ls.getExp(p));
-            pconfig.set(p + "." + system.getKey() + ".usedskillp", ls.getUsedPoints(p));
-        }
+        save();
         
-        try
-        {
-            pconfig.save(pfile);
-        }
-        catch (IOException e1)
-        {
-            e1.printStackTrace();
-        }
+        levelMap.clear();
+        loadConfig();
+        PlayerDataHandler.getInstance().loadUsers();
     }
 }
