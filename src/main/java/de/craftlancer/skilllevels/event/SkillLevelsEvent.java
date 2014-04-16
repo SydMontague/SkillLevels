@@ -5,7 +5,6 @@ import org.bukkit.event.Event;
 import de.craftlancer.skilllevels.LevelSystem;
 import de.craftlancer.skilllevels.LevelUser;
 
-//TODO unify constructor of subclasses
 public abstract class SkillLevelsEvent extends Event
 {
     private LevelUser user;

@@ -22,7 +22,6 @@ import de.craftlancer.skilllevels.handlers.SkillLevelHandler;
 import de.craftlancer.skilllevels.handlers.SkillPointHandler;
 
 //TODO MySQL Storage option
-//TODO UUID Auto-Update (not needed, as nobody else uses this plugin?)
 public class SkillLevels extends JavaPlugin implements Listener
 {
     private FileConfiguration config;
