@@ -2,8 +2,11 @@ package de.craftlancer.skilllevels;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -28,10 +31,36 @@ public class PlayerDataHandler
         pfile = new File(plugin.getDataFolder(), "users.yml");
         pconfig = YamlConfiguration.loadConfiguration(pfile);
         
+        List<String> playersToNull = new ArrayList<String>(); // UUID update procedure
+        
         for (String key : pconfig.getKeys(false))
             for (String system : pconfig.getConfigurationSection(key).getKeys(false))
                 if (plugin.hasLevelSystem(system))
-                    plugin.getLevelSystem(system).addUser(UUID.fromString(key), pconfig.getInt(key + "." + system + ".exp"), pconfig.getInt(key + "." + system + ".usedskillp"));
+                {
+                    UUID uuid = null;
+                    
+                    // UUID update procedure
+                    try
+                    {
+                        uuid = UUID.fromString(key);
+                    }
+                    catch (IllegalArgumentException e)
+                    {
+                        uuid = Bukkit.getOfflinePlayer(key).getUniqueId();
+                        playersToNull.add(key);
+                    }
+                    
+                    plugin.getLevelSystem(system).addUser(uuid, pconfig.getInt(key + "." + system + ".exp"), pconfig.getInt(key + "." + system + ".usedskillp"));
+                }
+        
+        // UUID update procedure
+        if (!playersToNull.isEmpty())
+        {
+            for (String name : playersToNull)
+                pconfig.set(name, null);
+            
+            plugin.save();
+        }
     }
     
     @SuppressWarnings("unused")
@@ -43,7 +72,7 @@ public class PlayerDataHandler
         return instance;
     }
     
-    public void set(UUID user, LevelSystem system, String field, Object value)
+    protected void set(UUID user, LevelSystem system, String field, Object value)
     {
         pconfig.set(user.toString() + "." + system.getSystemKey() + "." + field, value);
     }

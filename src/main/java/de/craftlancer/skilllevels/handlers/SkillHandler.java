@@ -9,7 +9,7 @@ import de.craftlancer.skilllevels.LevelSystem;
 import de.craftlancer.skilllevels.LevelUser;
 import de.craftlancer.skilllevels.Levelable;
 
-public abstract class SkillHandler implements Handler<Object, Integer>
+public abstract class SkillHandler implements Handler
 {
     private LevelSystem system;
     

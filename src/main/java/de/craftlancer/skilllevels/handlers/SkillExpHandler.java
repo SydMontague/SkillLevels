@@ -10,32 +10,59 @@ public class SkillExpHandler extends SkillHandler
     }
     
     @Override
-    public boolean hasCurrency(Object user, Integer amount)
+    public boolean hasCurrency(Object user, Object amount)
     {
-        return getUser(user).getExp() >= amount;
+        if (!checkInputHolder(user))
+            return false;
+        
+        if (!checkInputObject(amount))
+            return false;
+        
+        return getUser(user).getExp() >= (Integer) amount;
     }
     
     @Override
-    public void withdrawCurrency(Object user, Integer amount)
+    public void withdrawCurrency(Object user, Object amount)
     {
-        getUser(user).revokeExp(amount);
+        if (!checkInputHolder(user))
+            return;
+        
+        if (!checkInputObject(amount))
+            return;
+        
+        getUser(user).revokeExp((Integer) amount);
     }
     
     @Override
-    public void giveCurrency(Object user, Integer amount)
+    public void giveCurrency(Object user, Object amount)
     {
-        getUser(user).addExp(amount);
+        if (!checkInputHolder(user))
+            return;
+        
+        if (!checkInputObject(amount))
+            return;
+        
+        getUser(user).addExp((Integer) amount);
     }
     
     @Override
-    public void setCurrency(Object user, Integer amount)
+    public void setCurrency(Object user, Object amount)
     {
-        getUser(user).setExp(amount);
+        if (!checkInputHolder(user))
+            return;
+        
+        if (!checkInputObject(amount))
+            return;
+        
+        getUser(user).setExp((Integer) amount);
     }
     
     @Override
-    public String getFormatedString(Integer value)
+    public String getFormatedString(Object value)
     {
+        if (!checkInputObject(value))
+            return "INVALID INPUT OBJECT";
+        
         return value.toString() + " " + getCurrencyName();
     }
     

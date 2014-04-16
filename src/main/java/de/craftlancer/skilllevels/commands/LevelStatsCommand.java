@@ -30,7 +30,7 @@ public class LevelStatsCommand extends LevelSubCommand
             sender.sendMessage(LevelLanguage.COMMAND_ARGUMENTS);
         else
         {
-            UUID uuid = args.length < 2 && sender instanceof Player ? ((Player) sender).getUniqueId() : Bukkit.getPlayerExact(args[1]).getUniqueId();
+            UUID uuid = args.length < 2 && sender instanceof Player ? ((Player) sender).getUniqueId() : Bukkit.getOfflinePlayer(args[1]).getUniqueId();
             
             for (LevelSystem ls : plugin.getLevelSystems().values())
             {
