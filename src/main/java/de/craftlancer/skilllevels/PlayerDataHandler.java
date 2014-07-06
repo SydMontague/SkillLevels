@@ -26,6 +26,7 @@ public class PlayerDataHandler
             throw new RuntimeException("Tried to initialize PlayerDataHandler without valid SkillLevels instance. This can be caused by a external plugin trying to access this class without adding the right dependency to plugin.yml!");
     }
     
+    @SuppressWarnings("deprecation")
     protected void loadUsers()
     {
         pfile = new File(plugin.getDataFolder(), "users.yml");
@@ -63,7 +64,6 @@ public class PlayerDataHandler
         }
     }
     
-    @SuppressWarnings("unused")
     protected static PlayerDataHandler getInstance()
     {
         if (instance == null)
