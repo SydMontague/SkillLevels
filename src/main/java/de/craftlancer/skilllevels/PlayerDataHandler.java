@@ -64,7 +64,6 @@ public class PlayerDataHandler
         }
     }
     
-    @SuppressWarnings("unused")
     protected static PlayerDataHandler getInstance()
     {
         if (instance == null)

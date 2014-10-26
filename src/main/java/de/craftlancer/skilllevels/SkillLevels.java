@@ -6,11 +6,14 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
+import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.permissions.Permissible;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 import org.mcstats.Metrics.Graph;
@@ -26,6 +29,7 @@ public class SkillLevels extends JavaPlugin implements Listener
 {
     private FileConfiguration config;
     private Map<String, LevelSystem> levelMap = new HashMap<String, LevelSystem>();
+    private Map<String, LevelableProvider> provider = new HashMap<String, LevelableProvider>();
     private static SkillLevels instance;
     
     @Override
@@ -91,11 +95,23 @@ public class SkillLevels extends JavaPlugin implements Listener
         handleAction(action, name, 1, player);
     }
     
+    public void handleAction(LevelAction action, String name, Levelable user)
+    {
+        handleAction(action, name, 1, user);
+    }
+    
     public void handleAction(LevelAction action, String name, int amount, Player player)
     {
         for (LevelSystem ls : levelMap.values())
             if (player.hasPermission("levels.system." + ls.getSystemKey()))
                 ls.handleAction(action, name, amount, player.getUniqueId());
+    }
+    
+    public void handleAction(LevelAction action, String name, int amount, Levelable user)
+    {
+        for (LevelSystem ls : levelMap.values())
+            if (user instanceof Permissible && ((Permissible) user).hasPermission("levels.system." + ls.getSystemKey()))
+                ls.handleAction(action, name, amount, user.getUniqueId());
     }
     
     public void handleAction(LevelAction action, String name, int amount, UUID user)
@@ -118,6 +134,23 @@ public class SkillLevels extends JavaPlugin implements Listener
                 tmp.add(ls);
         
         return tmp;
+    }
+    
+    public UUID getUser(String string)
+    {
+        if(string.contains(":"))
+        {
+            String prefix = string.split(":")[0];
+            String name = string.split(":")[1];
+            
+            return provider.get(prefix).getUser(name);
+        }
+        
+        for(LevelableProvider entry : provider.values())
+            if(entry.hasUser(string))
+                return entry.getUser(string);
+        
+        return null;
     }
     
     public LevelSystem getLevelSystem(String name)

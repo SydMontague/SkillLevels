@@ -27,8 +27,7 @@ public class LevelSystem
     
     private final int pointsperlevel;
     
-    private int[] preCalc = null;
-    private Map<Integer, Integer> preCalcOpen = null;
+    private Map<Integer, Integer> preCalc = new HashMap<Integer, Integer>();
     private final Map<LevelAction, Map<String, Integer>> xpperaction;
     
     public LevelSystem(String systemKey, String systemName, int ppl, int maxlevel, String formula, Map<LevelAction, Map<String, Integer>> xpperaction, String levelName, String levelKey, String pointName, String pointKey, String expName, String expKey)
@@ -51,8 +50,6 @@ public class LevelSystem
         
         if (maxlevel > 0)
             preCalcLevels();
-        else
-            preCalcOpen = new HashMap<Integer, Integer>(60);
     }
     
     public boolean hasUser(Player player)
@@ -108,21 +105,21 @@ public class LevelSystem
     {
         if (level < 0)
             return -1;
-        if (maxlevel == 0)
-            return preCalcOpen.containsKey(level) ? preCalcOpen.get(level) : calcExpAtLevel(level);
-        else if (level <= maxlevel)
-            return preCalc != null ? preCalc[level] : calcExpAtLevel(level);
-        else
-            return -1;
+        
+        if (maxlevel != 0 && level > maxlevel)
+            level = maxlevel;
+        
+        return preCalc.containsKey(level) ? preCalc.get(level) : calcExpAtLevel(level);
     }
     
     public int getLevel(int exp)
     {
-        for (int i = 0; i <= maxlevel; i++)
-            if (getExpAtLevel(i) > exp)
-                return i - 1;
-        
-        return -1;
+        int i;
+        for(i = 0; getExpAtLevel(i) <= exp; i++)
+            if (maxlevel != 0 && i >= maxlevel)
+                return maxlevel;
+            
+        return i - 1;
     }
     
     @Deprecated
@@ -220,24 +217,24 @@ public class LevelSystem
     {
         int value = Double.valueOf(getMathResult(formula, level, formula)).intValue();
         
-        if (preCalcOpen != null)
-            preCalcOpen.put(level, value);
+        preCalc.put(level, value);
         
         return value;
     }
     
     private void preCalcLevels()
     {
-        preCalc = new int[maxlevel + 1];
-        
         for (int i = 0; i <= maxlevel; i++)
-            preCalc[i] = calcExpAtLevel(i);
+            calcExpAtLevel(i);
     }
     
     private String getMathResult(String form, double x, String completForm)
     {
-        if (x <= 0 || x > maxlevel)
+        if (x <= 0)
             return "0";
+        
+        if(maxlevel != 0 && x > maxlevel)
+            x = maxlevel;
         
         form = form.replace("x", String.valueOf(x));
         form = form.replaceAll("[-]", "+-");

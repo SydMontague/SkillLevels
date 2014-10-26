@@ -31,7 +31,15 @@ public class LevelStatsCommand extends LevelSubCommand
             sender.sendMessage(LevelLanguage.COMMAND_ARGUMENTS);
         else
         {
-            UUID uuid = args.length < 2 && sender instanceof Player ? ((Player) sender).getUniqueId() : Bukkit.getOfflinePlayer(args[1]).getUniqueId();
+            UUID uuid = null;
+            if (args.length < 2 && sender instanceof Player)
+                uuid = ((Player) sender).getUniqueId();
+            else
+            {
+                uuid = Bukkit.getOfflinePlayer(args[1]).getUniqueId();
+            }
+            //TODO allow /level stats for custom levelables
+            
             
             for (LevelSystem ls : plugin.getLevelSystems().values())
             {
@@ -40,6 +48,8 @@ public class LevelStatsCommand extends LevelSubCommand
                 
                 LevelUser user = ls.getUser(uuid);
                 
+                // TODO externalize
+                // "%sysname% - %levelname% %level% | %exp%/%nextexp% %expname% | %points% %pointsname%
                 sender.sendMessage(ChatColor.AQUA + ls.getSystemName() + " - " + ls.getLevelName() + " " + user.getLevel() + " | " + user.getExp() + "/" + ls.getExpAtLevel(user.getLevel() + 1) + " " + ls.getExpName() + " | " + user.getPoints() + " " + ls.getPointName());
             }
         }
