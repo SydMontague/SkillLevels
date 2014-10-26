@@ -21,6 +21,7 @@ public class LevelRevokeCommand extends LevelSubCommand
         super(permission, plugin);
     }
     
+    @SuppressWarnings("deprecation")
     @Override
     protected void execute(CommandSender sender, Command cmd, String label, String[] args)
     {

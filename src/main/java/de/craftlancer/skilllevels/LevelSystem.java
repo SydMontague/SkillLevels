@@ -193,6 +193,10 @@ public class LevelSystem
         
         LevelUser user = getUser(uuid);
         int initlevel = user.getLevel();
+        
+        if(maxlevel > 0 && initlevel == maxlevel)
+            return;
+        
         user.addExp(xpperaction.get(action).get(name) * amount);
         int newlevel = user.getLevel();
         boolean isPlayer = Bukkit.getPlayer(uuid) != null;

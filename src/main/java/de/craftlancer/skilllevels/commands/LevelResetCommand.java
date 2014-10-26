@@ -20,6 +20,7 @@ public class LevelResetCommand extends LevelSubCommand
         super(permission, plugin);
     }
     
+    @SuppressWarnings("deprecation")
     @Override
     protected void execute(CommandSender sender, Command cmd, String label, String[] args)
     {
