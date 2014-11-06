@@ -68,6 +68,9 @@ public class LevelListener implements Listener
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent e)
     {
+        if (e.getBlock().hasMetadata("SkillLevels.ignore"))
+            return;
+        
         plugin.handleAction(LevelAction.BLOCKDESTROY, e.getBlock().getType().name(), e.getPlayer());
     }
     
