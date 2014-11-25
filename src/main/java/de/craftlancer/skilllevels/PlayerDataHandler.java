@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class PlayerDataHandler
 {
@@ -79,13 +80,20 @@ public class PlayerDataHandler
     
     public void save()
     {
-        try
+        new BukkitRunnable()
         {
-            pconfig.save(pfile);
-        }
-        catch (IOException e1)
-        {
-            e1.printStackTrace();
-        }
+            @Override
+            public void run()
+            {
+                try
+                {
+                    pconfig.save(pfile);
+                }
+                catch (IOException e1)
+                {
+                    e1.printStackTrace();
+                }
+            }
+        }.runTaskAsynchronously(plugin);
     }
 }
