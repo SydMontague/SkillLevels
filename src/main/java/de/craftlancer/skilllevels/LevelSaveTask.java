@@ -7,6 +7,6 @@ public class LevelSaveTask extends BukkitRunnable
     @Override
     public void run()
     {
-        SkillLevels.getInstance().save();
+        SkillLevels.getInstance().save(false);
     }
 }

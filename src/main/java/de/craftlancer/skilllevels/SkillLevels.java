@@ -75,7 +75,7 @@ public class SkillLevels extends JavaPlugin implements Listener
     @Override
     public void onDisable()
     {
-        save();
+        save(true);
     }
     
     public static SkillLevels getInstance()
@@ -195,17 +195,17 @@ public class SkillLevels extends JavaPlugin implements Listener
         }
     }
     
-    public void save()
+    public void save(boolean shutdown)
     {
         for (LevelSystem system : getLevelSystems().values())
             system.save();
         
-        PlayerDataHandler.getInstance().save();
+        PlayerDataHandler.getInstance().save(shutdown);
     }
     
     public void reload()
     {
-        save();
+        save(false);
         
         levelMap.clear();
         loadConfig();

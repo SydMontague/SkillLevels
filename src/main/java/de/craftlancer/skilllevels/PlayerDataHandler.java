@@ -61,7 +61,7 @@ public class PlayerDataHandler
             for (String name : playersToNull)
                 pconfig.set(name, null);
             
-            plugin.save();
+            plugin.save(false);
         }
     }
     
@@ -78,22 +78,32 @@ public class PlayerDataHandler
         pconfig.set(user.toString() + "." + system.getSystemKey() + "." + field, value);
     }
     
-    public void save()
+    public void save(boolean shutdown)
     {
-        new BukkitRunnable()
-        {
-            @Override
-            public void run()
+        if (!shutdown)
+            new BukkitRunnable()
             {
-                try
+                @Override
+                public void run()
                 {
-                    pconfig.save(pfile);
+                    try
+                    {
+                        pconfig.save(pfile);
+                    }
+                    catch (IOException e1)
+                    {
+                        e1.printStackTrace();
+                    }
                 }
-                catch (IOException e1)
-                {
-                    e1.printStackTrace();
-                }
+            }.runTaskAsynchronously(plugin);
+        else
+            try
+            {
+                pconfig.save(pfile);
             }
-        }.runTaskAsynchronously(plugin);
+            catch (IOException e1)
+            {
+                e1.printStackTrace();
+            }
     }
 }
